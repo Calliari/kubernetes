@@ -144,6 +144,36 @@ To get logs, debug a pod we run:
 `kubectl get pods $pod_name`
 `kubectl describe pods $pod_name`
 
+### Deploy one POD to the cluster.
+=================================================================================
+cat <<EOF | kubectl create -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.7.9
+        ports:
+        - containerPort: 80
+EOF
+
+
+Run some pods commands to get used to the outputs, to delete a this deployemnt run, "we need to pass the `metadata name` (nginx-deployment)":
+`kubectl delete deployments nginx-deployment`
+
+
+
 
 
 ### Deploy the Stan's Robot Shop app to the cluster.
