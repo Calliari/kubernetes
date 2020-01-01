@@ -146,6 +146,7 @@ To get logs, debug a pod we run:
 
 ### Deploy one POD to the cluster.
 =================================================================================
+```
 cat <<EOF | kubectl create -f -
 apiVersion: apps/v1
 kind: Deployment
@@ -167,7 +168,7 @@ spec:
         ports:
         - containerPort: 80
 EOF
-
+```
 
 Run some pods commands to get used to the outputs, to delete a this deployemnt run, "we need to pass the `metadata name` (nginx-deployment)":
 `kubectl delete deployments nginx-deployment`
