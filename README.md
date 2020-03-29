@@ -98,7 +98,8 @@ echo "net.bridge.bridge-nf-call-iptables=1" | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
 ```
 
-### Install Flannel in the cluster by running this only on the Master node only:
+### Install Flannel-plugin (CNI) for the pods communication (translating over the container ip and the node ip addresses) in the cluster by running this only on the Master node only
+More info abput the CNI plugins  here ==> https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#pod-network
 ```
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/bc79dd1505b0c8681ece4de4c0d86c5cd2643275/Documentation/kube-flannel.yml
 ```
