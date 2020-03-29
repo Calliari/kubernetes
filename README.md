@@ -100,6 +100,8 @@ sudo sysctl -p
 
 ### Install Flannel-plugin (CNI) for the pods communication (translating over the container's ip and the node's ip addresses) in the cluster by running this on the Master node ONLY!
 More info about the CNI plugins  here ==> https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#pod-network
+
+And more info about the 'add-ons' which extend the functionality of Kubernetes. ==> https://kubernetes.io/docs/concepts/cluster-administration/addons/
 ```
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/bc79dd1505b0c8681ece4de4c0d86c5cd2643275/Documentation/kube-flannel.yml
 ```
