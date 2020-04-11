@@ -21,6 +21,20 @@ For this simple cluster to work 3 servers are needed.
 
 
 ### Install all these packages on all 3 servers
+  - Install kubelet(1.18.1-00), kubeadm(1.18.1-00), and kubectl(1.18.1-00) - test kubeadm installation
+```
+sudo apt-get update && sudo apt-get install -y apt-transport-https gnupg2
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo apt-get install -y kubectl
+
+sudo apt-get install -y kubelet=1.18.1-00 kubeadm=1.18.1-00 kubectl=1.18.1-00 
+sudo apt-mark hold kubelet kubeadm kubectl
+kubeadm version
+
+```
+
   - Install and test docker(18.06.1~ce~3-0~ubuntu) 90 installation 
 ```
 sudo apt-get update -y
@@ -31,27 +45,19 @@ sudo add-apt-repository \
    stable"
 
 sudo apt-get update -y
-sudo apt-get install -y docker-ce=18.06.1~ce~3-0~ubuntu && sudo apt-mark hold docker-ce
+## install latest docker-engine docker-engine-client
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+
+# install a specific verions (docker engine and docker client) [docker(18.06.1~ce~3-0~ubuntu]
+#sudo apt-get install -y docker-ce=18.06.1~ce~3-0~ubuntu && sudo apt-mark hold docker-ce
+
 sudo docker version
 
 ```
 
-  - Install kubelet(1.12.7-00), kubeadm(1.12.7-00), and kubectl(1.12.7-00) - test kubeadm installation
-```
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-
-cat << EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
-deb https://apt.kubernetes.io/ kubernetes-xenial main
-EOF
-
-sudo apt-get update -y
-sudo apt-get install -y kubelet=1.12.7-00 kubeadm=1.12.7-00 kubectl=1.12.7-00 && sudo apt-mark hold kubelet kubeadm kubectl
-kubeadm version
-
-```
 
 ### Initialize the cluster
-On the Kube master node only:
+On the Kube master node only network CIDR=10.244.0.0/16:
 ```
 sudo kubeadm init --pod-network-cidr=10.244.0.0/16
 ```
@@ -68,7 +74,11 @@ Copy and run the command on the nodes when a similar line prompt from the `sudo 
 You can now join any number of machines by running the following on each node
 as root:
 
-kubeadm join $some_ip:6443 --token $some_token --discovery-token-ca-cert-hash $some_hash
+# This is a sample commands when the command plane (kubernetes master) is ready to accepct the worker-node
+# $ sudo kubeadm join 172.31.39.233:6443 --token 3jmd1a.1evrjd9gcgclo0wf \
+#   --discovery-token-ca-cert-hash #sha256:a239c09128b0db3d5319333936c48ac0626321b9bea214e8075479d5155af
+
+sudo kubeadm join $some_ip:6443 --token $some_token --discovery-token-ca-cert-hash $some_hash
 
 ```
 Verify that the cluster is responsive and that Kubectl is working
