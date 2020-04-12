@@ -21,6 +21,7 @@ For this simple cluster to work 3 servers are needed.
 
 
 ### Install all these packages on all 3 servers
+ ##### (There is a script that install all the necessary packages in all kubernetes automaticaly `kubernetes-install-master-and-nodes-script.sh` just need to run that in all servers and use an additional configuration to define the kunernetes-master `control plane`.)
   - Install kubelet(1.18.1-00), kubeadm(1.18.1-00), and kubectl(1.18.1-00) - test kubeadm installation
 ```
 sudo apt-get update && sudo apt-get install -y apt-transport-https gnupg2
@@ -113,7 +114,8 @@ More info about the CNI plugins  here ==> https://kubernetes.io/docs/setup/produ
 
 And more info about the 'add-ons' which extend the functionality of Kubernetes. ==> https://kubernetes.io/docs/concepts/cluster-administration/addons/
 ```
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/bc79dd1505b0c8681ece4de4c0d86c5cd2643275/Documentation/kube-flannel.yml
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
 ```
 
 ### To verify that the Flannel pods are up and running. Run this command to get a list of system pods:
@@ -135,16 +137,36 @@ Get all nodes assigned to a master on a cluster
 
 # Get commands with basic output
 ```
+#
 kubectl get namespace                         # List all namespace 
+
+#
 kubectl get services                          # List all services in the namespace
+
+#
+kubectl get deployment                        # List all deployment
+kubectl get deployment my-dep                 # List a particular deployment
+
+#
+kubectl get pods                              # List all deployment (not list the default pods)
 kubectl get pods --all-namespaces             # List all pods in all namespaces
 kubectl get pods -o wide                      # List all pods in the namespace, with more details
-kubectl get deployment my-dep                 # List a particular deployment
-kubectl get pods                              # List all pods in the namespace
 kubectl get pod my-pod -o yaml                # Get a pod's YAML
 kubectl get pod my-pod -o yaml --export       # Get a pod's YAML without cluster specific information
+
+#
 kubectl get endpoints                         # List of endpoints in your cluster that get created with a service:
 
+#
+kubectl describe svc nginx-service            # Describe a particular service
+kubectl describe pod nginx-service            # Describe a particular pod
+kubectl describe deployment nginx-service     # Describe a particular deployment
+kubectl describe node node1                   # Describe a particular node-server (worker-node)
+
+#
+kubectl delete svc nginx-service              # Delete a particular service
+kubectl delete pod nginx-pod                  # Delete a particular pod
+kubectl delete deployment nginx-deployment    # Delete a particular deployment
 
 ```
 
@@ -160,7 +182,7 @@ To get logs, debug a pod we run:
 `kubectl get pods $pod_name`
 `kubectl describe pods $pod_name`
 
-### Deploy one POD to the cluster.
+### Deploy one POD to the cluster with a deployment object kind.
 =================================================================================
 ```
 cat <<EOF | kubectl create -f -
@@ -172,7 +194,7 @@ spec:
   selector:
     matchLabels:
       app: nginx
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
