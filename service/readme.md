@@ -14,7 +14,7 @@ These are the services that are accessed by the clients/users (ClusterIP, NodePo
 
 ssh into the master `control plane` and run the following to create a service:
 
-</hr>
+<hr></hr>
 
 - ClusterIP
     This service is created inside a cluster and can only be accessed by other pods in that cluster. So basically we use this type of service when we want to expose a service to other pods within the same cluster. 
@@ -29,7 +29,8 @@ ssh into the master `control plane` and run the following to create a service:
     curl -I 10.244.2.3 # if all good, 200 HTTP request will be replied from the nginx-service-ClusterIP
     curl -I `kubectl get svc -o wide | grep nginx |awk '{print $3}'`
     ```
-</hr>
+
+<hr></hr>
 
 - NodePort
     This service is created inside a cluster and can be accessed by inside and ouside cluster from any node with the port. So basically we use this type of service when we want to expose a service to other pods within the same cluster with node-ip and the port i.g (3.10.4.98:30000). 
@@ -46,7 +47,7 @@ ssh into the master `control plane` and run the following to create a service:
     curl -I `kubectl get svc -o wide | grep nginx |awk '{print $3}'`
     ```
 
-</hr>
+<hr></hr>
 
 - LoadBalancer
     This service is created inside a cluster and can be accessed by outside cluster. So basically we use this type of service when we want to expose a service to other pods within the same cluster service loadbalancer (3.10.4.98 or a dns name). 
