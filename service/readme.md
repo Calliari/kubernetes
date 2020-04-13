@@ -19,7 +19,7 @@ ssh into the master `control plane` and run the following to create a service:
     `curl -i 10.244.2.3 # if all good, 200 HTTP request will be replied from the service`
     `curl -I `
 
-    # Create the nginx service using the `type: ClusterIP` from the file called 'nginx-service-ClusterIP.yaml'
+    #### Create the nginx service using the `type: ClusterIP` from the file called 'nginx-service-ClusterIP.yaml'
     kubectl -f apply nginx-service-ClusterIP.yaml
 
     ```
@@ -33,7 +33,7 @@ ssh into the master `control plane` and run the following to create a service:
     `curl -i 35.178.41.50:30000 # if all good, 200 HTTP request will be replied from node node (node1)`
     `curl -i 35.178.188.54:30000 # if all good, 200 HTTP request will be replied from node node (node2)`
 
-    # Create the nginx service using the `type: NodePort` from the file called 'nginx-service-NodePort.yaml'
+    ##### Create the nginx service using the `type: NodePort` from the file called 'nginx-service-NodePort.yaml'
     kubectl -f apply nginx-service-NodePort.yaml
 
     ```
@@ -43,15 +43,18 @@ ssh into the master `control plane` and run the following to create a service:
 
 
 - LoadBalancer
-    This service is created inside a cluster and can be accessed by inside and ouside cluster. So basically we use this type of service when we want to expose a service to other pods within the same cluster with node-ip and the port (3.10.4.98:30000). 
-    `curl -i 3.10.4.98:30000 # if all good, 200 HTTP request will be replied from node master (master)`
+    This service is created inside a cluster and can be accessed by outside cluster. So basically we use this type of service when we want to expose a service to other pods within the same cluster service loadbalancer (3.10.4.98 or a dns name). 
+    `curl -i 3.10.4.98 # if all good, 200 HTTP request will be replied from node master (master)`
 
-    # Create the nginx service using the `type: LoadBalancer` from the file called 'nginx-service-LoadBalancer.yaml'
+    ##### Create the nginx service using the `type: LoadBalancer` from the file called 'nginx-service-LoadBalancer.yaml'
     kubectl -f apply nginx-service-LoadBalancer.yaml
 
     ```
-    curl -I 10.244.2.3 # if all good, 200 HTTP request will be replied from the nginx-service
-    curl -I `kubectl get svc -o wide | grep nginx |awk '{print $3}'`
+    curl -i 3.10.4.98 # if all good, 200 HTTP request will be replied from the nginx-service-loadbalancer 
+
+    or 
+    curl -i dns of the loadbalancer # if all good, 200 HTTP request will be replied from the nginx-service-loadbalancer 
+
     ```
 
 

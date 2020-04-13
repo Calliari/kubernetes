@@ -17,8 +17,67 @@ For this simple cluster to work 3 servers are needed.
 | kubectl           |  | kubectl           |  | kubectl           |
 | control plane     |  |-------------------|  |-------------------|
 |-------------------|  
+
+```
+On this cluster we will assign the pod to be on 10.244.0.0/16 CIDIR network:
+
+```
+               ______________________
+              | VPC with CIDIR block |
+              |----------------------|   
+              |   172.31.0.0/16      |
+              |------|---------------| 
+          ___________|__________________________________
+         |                        |                     |
+|--------|----------|  |----------|--------|  |---------|---------|
+|  172.31.1.151     |  |  172.31.2.152     |  |  172.31.3.153     |
+|-------------------|  |-------------------|  |-------------------| 
+| kubernetes master |  | kubernetes node 1 |  | kubernetes node 2 |
+|-------------------|  |-------------------|  |-------------------| 
+|                   |  |   ____    ____    |  |   ____    ____    |  
+|   ____   ____     |  |  |pod |  |pod |   |  |  |pod |  |pod |   |
+|  |pod | |pod |    |  |  |____|  |____|   |  |  |____|  |____|   |
+|  |____| |____|    |  |   __|_    __|_    |  |   __|_    __|_    |
+|   __|_   __|_     |  |  |pod |  |pod |   |  |  |pod |  |pod |   |
+|  |pod | |pod |    |  |  |____|  |____|   |  |  |____|  |____|   |
+|  |____| |____|    |  |   __|_    __|_    |  |   __|_    __|_    |
+|   __|_   __|_     |  |  |pod |  |pod |   |  |  |pod |  |pod |   |
+|  |pod | |pod |    |  |  |____|  |____|   |  |  |____|  |____|   |
+|  |____| |____|    |  |   __|_    __|_    |  |   __|_    __|_    |  
+|    |       |      |  |  |pod |  |pod |   |  |  |pod |  |pod |   |
+|    |       |      |  |  |____|  |____|   |  |  |____|  |____|   |
+|----|-------|------|  |----|-------|------|  |----|--------|-----|  
+     |       |              |       |              |        | 
+     |       |              |       |              |        |    
+     |_______|______________|_______|______________|________|
+                               |
+                               |
+                      |--------|----------|   
+                      |   10.244.0.0/16   |
+                      |-------------------|
+                      | pod cidir block   |
+                      |-------------------|  
+
 ```
 
+On master - by default we have (pod):  
+ - coredns Pod                 
+ - etcd Pod                    
+ - kube-apiserver Pod          
+ - kube-controller-manager Pod 
+ - kube-proxy Pod              
+ - kube-scheduler Pod
+ - and additional/optional pods for the kubernetes plugins pods i.g (flannel plugin)          
+
+ On worker-node 2 - by default we have (pod): 
+ - kube-proxy Pod              
+ - and pod for the apps
+ 
+ On worker-node 2 - by default we have (pod):  
+ - kube-proxy Pod              
+ - and pod for the apps
+ 
+     
 
 ### Install all these packages on all 3 servers
  ##### (There is a script that install all the necessary packages in all kubernetes automaticaly `kubernetes-install-master-and-nodes-script.sh` just need to run that in all servers and use an additional configuration to define the kunernetes-master `control plane`.)

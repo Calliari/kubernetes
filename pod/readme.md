@@ -30,3 +30,11 @@ We can check the page html code response if the pod is actually accepting the re
 curl -i 10.244.2.3 # if all good, 200 HTTP request will be replied
 curl -I `kubectl get pod -o wide | grep nginx |awk '{print $6}'`
 ```
+
+Get a shell to the running Container:
+`kubectl exec -it nginx-pod -- /bin/bash`
+
+Run a shell to the running Container:
+`kubectl exec nginx-pod -- /bin/bash -c 'ls -lsa /usr/share/nginx/html'`
+`kubectl exec nginx-pod -- /bin/bash -c 'cp /usr/share/nginx/html/index.html /usr/share/nginx/html/index_back.html; echo pod $(hostname -I) > /usr/share/nginx/html/index.html'`
+`kubectl exec nginx-pod -- /bin/bash -c 'cat /usr/share/nginx/html/index.html'`

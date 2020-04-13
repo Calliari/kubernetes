@@ -7,6 +7,8 @@ metadata:
     version: v1
 spec:
   type: LoadBalancer # there are 3 types (ClusterIP, NodePort, LoadBalancer)
+  externalIPs: # add the OPTIONAL cloud-provider (Azure, AWS, GCP) load-balancer resource ip
+    - 172.31.39.150
   selector:
     zone: prod # 
   ports:
