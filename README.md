@@ -194,38 +194,46 @@ Get all nodes assigned to a master on a cluster
 `kubectl get nodes`
 `kubectl get nodes -o wide`
 
-# Get commands with basic output
+# Get commands with basic output, adding the option (-o wide) can be benefitial because it's add a bit of more details from the objetc requested
+
 ```
 #
-kubectl get namespace                         # List all namespace 
+kubectl get node                              # List all nodes (worker-node)
+kubectl describe node node1                   # Describe a particular node-server (worker-node)
 
 #
-kubectl get services                          # List all services in the namespace
+kubectl get namespace                         # List all namespace 
+kubectl get namespace my-app                  # List particular namespace 
+
+#
+kubectl get services                          # List all services in the namespace ( service == svc)
+kubectl describe svc nginx-service            # Describe a particular service
+kubectl delete svc nginx-service              # Delete a particular service
+
 
 #
 kubectl get deployment                        # List all deployment
-kubectl get deployment my-dep                 # List a particular deployment
+kubectl describe deployment nginx-service     # Describe a particular deployment
+kubectl delete deployment nginx-deployment    # Delete a particular deployment
+
 
 #
+kubectl get rs                                # List all replicaSet
+kubectl describe rs nginx-replicaset          # Describe a particular replicaSet
+
+
+#
+kubectl describe pod nginx-service            # Describe a particular pod
 kubectl get pods                              # List all deployment (not list the default pods)
 kubectl get pods --all-namespaces             # List all pods in all namespaces
 kubectl get pods -o wide                      # List all pods in the namespace, with more details
 kubectl get pod my-pod -o yaml                # Get a pod's YAML
 kubectl get pod my-pod -o yaml --export       # Get a pod's YAML without cluster specific information
+kubectl delete pod nginx-pod                  # Delete a particular pod
 
 #
 kubectl get endpoints                         # List of endpoints in your cluster that get created with a service:
 
-#
-kubectl describe svc nginx-service            # Describe a particular service
-kubectl describe pod nginx-service            # Describe a particular pod
-kubectl describe deployment nginx-service     # Describe a particular deployment
-kubectl describe node node1                   # Describe a particular node-server (worker-node)
-
-#
-kubectl delete svc nginx-service              # Delete a particular service
-kubectl delete pod nginx-pod                  # Delete a particular pod
-kubectl delete deployment nginx-deployment    # Delete a particular deployment
 
 ```
 

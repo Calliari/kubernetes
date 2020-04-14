@@ -1,7 +1,7 @@
 apiVersion: apps/v1
-kind: ReplicaSet
+kind: Deployment
 metadata:
-  name: nginx-replicaset
+  name: nginx-deployment
   labels:
     zone: prod
     version: v1

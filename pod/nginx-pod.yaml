@@ -5,6 +5,7 @@ metadata:
   name: nginx-pod
   labels:
     zone: prod
+    pod-name: nginx-pod
     version: v1
 spec:
   restartPolicy: Never # restart if the conatainer fails (Always, Never)
