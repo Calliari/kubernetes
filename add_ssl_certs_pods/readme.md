@@ -66,21 +66,21 @@ curl https://localhost:8443 -k
 Or you can use the below command and load the site from an incognito brower:
 
 ```
-ssh connection with `-L` flag.
+ssh connection with '-L' flag.
 |
-`ssh -L` 
-port on laptop that your are using. 
+ssh -L 
+port on laptop that your are using '8443'. 
         |
-        `8443`: 
-localhost on laptop that your are using.
+        8443: 
+localhost on laptop that your are using '127.0.0.1'.
                 |
-                `127.0.0.1`:
-localhost on cluster that your are binding with (kubectl port-forward ).
+                127.0.0.1:
+localhost on cluster that your are binding with (kubectl port-forward) '8443'.
                             |
-                            `8443`
-The username and the ip address of the server that ssh is being used.
+                            8443
+The username and the ip address of the server that ssh is being used 'username@18.130.220.172'.
                                     |
-                                    `username@18.130.220.172`
+                                    username@18.130.220.172
 ```
 
 ```
