@@ -65,6 +65,7 @@ curl https://localhost:8443 -k
 
 Or you can use the below command and load the site from an incognito brower:
 
+```
 ssh connection with `-L` flag.
 |
 `ssh -L` 
@@ -80,6 +81,7 @@ localhost on cluster that your are binding with (kubectl port-forward ).
 The username and the ip address of the server that ssh is being used.
                                     |
                                     `username@18.130.220.172`
+```
 
 ```
 ssh -L 8443:127.0.0.1:8443 username@18.130.220.172
