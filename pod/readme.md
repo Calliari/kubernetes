@@ -31,8 +31,14 @@ curl -i 10.244.2.3 # if all good, 200 HTTP request will be replied
 curl -I `kubectl get pod -o wide | grep nginx |awk '{print $6}'`
 ```
 
-Get a shell to the running Container:
-`kubectl exec -it nginx-pod -- /bin/bash`
+Get a shell to the default running Container:
+```
+kubectl exec -it nginx-pod -- /bin/bash
+```
+Pod can have more than 1 conatiner running, so to get a shell to the specifc running Container in a pod:
+```
+kubectl exec -it nginx-pod -c nginx-container /bin/bash
+```
 
 Run a shell to the running Container:
 `kubectl exec nginx-pod -- /bin/bash -c 'ls -lsa /usr/share/nginx/html'`

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-with-no-https
+spec:
+  containers:
+  - image: linuxacademycontent/fortune
+    name: html-web
+    env:
+    - name: INTERVAL
+      valueFrom:
+        configMapKeyRef:
+          name: config
+          key: sleep-interval
