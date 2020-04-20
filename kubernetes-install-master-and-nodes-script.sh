@@ -41,8 +41,8 @@ sudo apt-get install -y containerd.io docker-ce docker-ce-cli containerd.io
 #sudo apt-get install -y docker-ce=18.06.1~ce~3-0~ubuntu && sudo apt-mark hold docker-ce
 
 # Restart docker.
-systemctl daemon-reload
-systemctl restart docker
+sudo systemctl daemon-reload
+sudo systemctl restart docker
 
 echo -e "\n\nSHOW HOLD for Kubeadm, kubectl and kubelet -------------"
 sudo apt-mark showhold
