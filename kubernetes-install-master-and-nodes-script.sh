@@ -40,6 +40,23 @@ sudo apt-get install -y containerd.io docker-ce docker-ce-cli containerd.io
 # install a specific verions (docker engine and docker client) [docker(18.06.1~ce~3-0~ubuntu]
 #sudo apt-get install -y docker-ce=18.06.1~ce~3-0~ubuntu && sudo apt-mark hold docker-ce
 
+# Setup daemon.
+cat > /etc/docker/daemon.json <<EOF
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2"
+}
+EOF
+
+mkdir -p /etc/systemd/system/docker.service.d
+
+# Restart docker.
+systemctl daemon-reload
+systemctl restart docker
 
 echo -e "\n\nSHOW HOLD for Kubeadm, kubectl and kubelet -------------"
 sudo apt-mark showhold
