@@ -15,6 +15,7 @@ sudo apt-get install -y kubectl
 # install the lastest verison
 sudo apt-get install -y kubelet kubeadm kubectl
 
+# hold the verions of the packages installed on the time them was installed
 sudo apt-mark hold kubelet kubeadm kubectl
 
 sudo apt-get update -y
