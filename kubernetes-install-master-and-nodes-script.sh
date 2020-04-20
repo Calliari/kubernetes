@@ -9,7 +9,12 @@ echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/
 sudo apt-get update
 sudo apt-get install -y kubectl
 
-sudo apt-get install -y kubelet=1.18.1-00 kubeadm=1.18.1-00 kubectl=1.18.1-00
+# install a perticular verion
+#sudo apt-get install -y kubelet=1.18.1-00 kubeadm=1.18.1-00 kubectl=1.18.1-00
+
+# install the lastest verison
+sudo apt-get install -y kubelet kubeadm kubectl
+
 sudo apt-mark hold kubelet kubeadm kubectl
 
 sudo apt-get update -y
