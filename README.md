@@ -152,6 +152,19 @@ kubectl get nodes
 ```
 Or the JOIN NODE to a CLUSTER can retrived from `kubeadm token create --print-join-command` CMD
 
+### Install Flannel-plugin (CNI) for the pods communication (translating over the container's ip and the node's ip addresses) in the cluster by running this on the Master node ONLY!
+More info about the CNI plugins  here ==> https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#pod-network
+
+And more info about the 'add-ons' which extend the functionality of Kubernetes. ==> https://kubernetes.io/docs/concepts/cluster-administration/addons/
+```
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+```
+
+### To verify that the Flannel pods are up and running. Run this command to get a list of system pods:
+```
+kubectl get pods -n kube-system
+```
 
 ### Joing the node to a cluster (node 1 and node 2)
 Afert get the kubeadm command run on the nodes to joing them into a cluster:
@@ -166,20 +179,6 @@ echo "net.bridge.bridge-nf-call-iptables=1" | sudo tee -a /etc/sysctl.conf
 ### sysctl - configure kernel parameters at runtime. To Load in sysctl settings from the file specified or /etc/sysctl.conf
 ```
 sudo sysctl -p
-```
-
-### Install Flannel-plugin (CNI) for the pods communication (translating over the container's ip and the node's ip addresses) in the cluster by running this on the Master node ONLY!
-More info about the CNI plugins  here ==> https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#pod-network
-
-And more info about the 'add-ons' which extend the functionality of Kubernetes. ==> https://kubernetes.io/docs/concepts/cluster-administration/addons/
-```
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-
-```
-
-### To verify that the Flannel pods are up and running. Run this command to get a list of system pods:
-```
-kubectl get pods -n kube-system
 ```
 
 ### The kubernetes cluster should be up and running with one master and nodes
