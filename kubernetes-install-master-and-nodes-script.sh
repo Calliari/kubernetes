@@ -55,6 +55,9 @@ sudo mkdir -p /etc/systemd/system/docker.service.d
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 
+# Start the master without any configuration (brand new kubeadm config)
+sudo kubeadm reset --force
+
 echo -e "\n\nSHOW HOLD for Kubeadm, kubectl and kubelet -------------"
 sudo apt-mark showhold
 echo -e "\n\nSHOW Kubeadm, kubectl and  Verion -------------"
