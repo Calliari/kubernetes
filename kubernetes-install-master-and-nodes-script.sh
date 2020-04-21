@@ -5,7 +5,7 @@
 # Install Docker CE
 ## Set up the repository:
 ### Install packages to allow apt to use a repository over HTTPS
-apt-get update && apt-get install -y \
+sudo apt-get update && apt-get install -y \
   apt-transport-https ca-certificates curl software-properties-common gnupg2
 
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
