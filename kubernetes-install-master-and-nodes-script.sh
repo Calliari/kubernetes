@@ -11,7 +11,6 @@ sudo apt-get update && sudo apt-get install -y \
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
 sudo apt-get update
-sudo apt-get install -y kubectl
 
 # install a perticular verion
 #sudo apt-get install -y kubelet=1.18.1-00 kubeadm=1.18.1-00 kubectl=1.18.1-00
@@ -52,9 +51,9 @@ cat << EOF | sudo tee -a /etc/docker/daemon.json
 EOF
 
 # Restart docker.
-mkdir -p /etc/systemd/system/docker.service.d
-systemctl daemon-reload
-systemctl restart docker
+sudo mkdir -p /etc/systemd/system/docker.service.d
+sudo systemctl daemon-reload
+sudo systemctl restart docker
 
 echo -e "\n\nSHOW HOLD for Kubeadm, kubectl and kubelet -------------"
 sudo apt-mark showhold
