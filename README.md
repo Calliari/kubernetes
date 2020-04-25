@@ -227,12 +227,12 @@ kubectl describe rs nginx-replicaset          # Describe a particular replicaSet
 
 
 #
-kubectl describe pod nginx-service            # Describe a particular pod
-kubectl get pods                              # List all deployment (not list the default pods)
 kubectl get pods --all-namespaces             # List all pods in all namespaces
+kubectl get pods                              # List all deployment (not list the default pods)
 kubectl get pods -o wide                      # List all pods in the namespace, with more details
 kubectl get pod my-pod -o yaml                # Get a pod's YAML
 kubectl get pod my-pod -o yaml --export       # Get a pod's YAML without cluster specific information
+kubectl describe pod nginx-service            # Describe a particular pod
 kubectl delete pod nginx-pod                  # Delete a particular pod
 
 #
