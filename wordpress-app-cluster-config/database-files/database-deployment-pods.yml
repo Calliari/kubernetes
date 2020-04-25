@@ -14,11 +14,14 @@ metadata:
   namespace: database
   name: mysql-service
 spec:
-  ports:
-  - port: 3306
+  type: ClusterIP # there are 3 types (ClusterIP, NodePort, LoadBalancer)
   selector:
-    app: mysql
-  clusterIP: None
+    # these lables need to match the replicaSet  (sometimes created by replicaSet or deploymets objects)
+    tier: database # Deployment.metadata.labels.tier
+  ports:
+  - protocol: TCP
+    port: 3306
+    targetPort: 3306
 ---
 # Secret clientMysqluser
 # for mysql-user echo -n 'mysql-user' | base64 && echo -n 'user-pwd' | base64
@@ -97,21 +100,24 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      pod-name: mysql-pod # this is the label need to that match the pod's labels (spec.template.labels)
-      zone: prod # this is the label need to that match the pod's labels (spec.template.labels)
-      version: v1 # this is the label need to that match the pod's labels (spec.template.labels)
+      pod-name: mysql-pod # this label need to that match the pod's labels (spec.template.labels)
+      zone: prod # this label need to that match the pod's labels (spec.template.labels)
+      version: v1 # this label need to that match the pod's labels (spec.template.labels)
+      tier: database
   template:
     metadata:
       labels:
-        pod-name: mysql-pod # this lablel will be used by the replicaset (spec.selector.matchLabels)
-        zone: prod # this lablel will be used by the replicaset (spec.selector.matchLabels)
-        version: v1 # this lablel will be used by the replicaset (spec.selector.matchLabels)
+        pod-name: mysql-pod # this label will be used by the replicaset (spec.selector.matchLabels)
+        zone: prod # this label will be used by the replicaset (spec.selector.matchLabels)
+        version: v1 # this label will be used by the replicaset (spec.selector.matchLabels)
+        tier: database
     spec:
       containers:
       - name: mysql-container
         image: mysql:5.7.29
         ports:
           - containerPort: 3306
+            name: mysql
         # container saving the data on 'mountPath' path specified (inside this container)
         volumeMounts:
           - mountPath: "/var/lib/mysql"
@@ -128,7 +134,7 @@ spec:
         node: database # schedule pod to specific node
       # connect the the 'mountPath' to 'persistentVolumeClaim' name 'mysql-data-disk'
       volumes:
-        - name: mysql-data
+        - name: mysql-data # spec.template.volumeMounts.name
           persistentVolumeClaim:
             claimName: mysql-data-disk
 

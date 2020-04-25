@@ -29,11 +29,126 @@ metadata:
   name: frontend-service
 spec:
   ports:
-    - port: 80 # host port of the service expose (service)
-      targetPort: 80 # container port (pod)
+    - name: http
+      protocol: TCP
       nodePort: 30000 # host port of the worker-node (node)
+      port: 80 # host port of the service expose (service)
+      targetPort: 80 # container port (pod)
   selector:
     # these lables need to match the replicaSet (sometimes created by replicaSet or deploymets objects)
-    app: wordpress
-    tier: frontend
+    tier: frontend # Deployment.metadata.labels.tier
   type: NodePort
+---
+# Secret clientMysqluser
+# for mysql-user echo -n 'mysql-user' | base64 && echo -n 'user-pwd' | base64
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: web
+  name: mysql-secret-username
+  labels:
+    username: mysql-user
+data:
+  username: bXlzcWwtdXNlcg==
+  password: dXNlci1wd2Q=
+---
+# Secret root
+# for root (echo -n 'root-pwd' | base64)
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: web
+  name: mysql-secret-root
+  labels:
+    user: root
+type: Opaque
+data:
+  ROOT_PASSWORD: cm9vdC1wd2Q=
+---
+# PersistentVolume
+# specifies that the volume is at /var/website-frontend on the cluster’s Node: EFS, mounted disk and etc
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: web
+  name: web-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  claimRef:
+    namespace: web
+    name: wp-pv-claim # claim pvc 'web-data-disk', bound the pv with pvc
+  capacity:
+    storage: 3Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/website-frontend" # this need to be available on the nodes
+---
+# Pods use PersistentVolumeClaims to request physical storage
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: web
+  name: wp-pv-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+# Deployment
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  namespace: web
+  name: wordpress-pod-deployment
+  labels:
+    zone: prod
+    version: v1
+    tier: web
+spec:
+  # modify replicas according to your case
+  replicas: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      pod-name: wordpress-pod # this is the label need to that match the pod's labels (spec.template.labels)
+      zone: prod # this is the label need to that match the pod's labels (spec.template.labels)
+      version: v1 # this is the label need to that match the pod's labels (spec.template.labels)
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        pod-name: wordpress-pod # this lablel will be used by the replicaset (spec.selector.matchLabels)
+        zone: prod # this lablel will be used by the replicaset (spec.selector.matchLabels)
+        version: v1 # this lablel will be used by the replicaset (spec.selector.matchLabels)
+        tier: frontend
+    spec:
+      containers:
+      - image: wordpress:4.8-apache
+        name: wordpress
+        ports:
+        - containerPort: 80
+          name: wordpress
+        volumeMounts:
+        - mountPath: /var/www/html
+          name: wordpress-persistent-storage # volumes name spec.volumes
+        env:
+        - name: WORDPRESS_DB_HOST
+          value: 10.99.42.237
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret-root
+              key: ROOT_PASSWORD
+      nodeSelector:
+        node: web # schedule pod to specific node
+      # connect the the 'mountPath' to 'persistentVolumeClaim' name 'wp-pv-claim'
+      volumes:
+        - name: wordpress-persistent-storage # spec.template.volumeMounts.name
+          persistentVolumeClaim:
+            claimName: wp-pv-claim

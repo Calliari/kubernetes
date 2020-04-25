@@ -36,4 +36,4 @@ spec:
 
 
 # After the PV and PVC are created the pods are now sharing the monted volumed.
-#  create the DB inside a pod and all data will be saved on node database path '/mnt/data'
+#  create the DB (CREATE DATABASE wordpress;) inside a pod and all data will be saved on node database path '/mnt/data'
