@@ -1,0 +1,34 @@
+---
+# PersistentVolume
+# specifies that the volume is at /var/website-frontend on the cluster’s Node: EFS, mounted disk and etc
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: web
+  name: web-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  claimRef:
+    namespace: web
+    name: wp-pv-claim # claim pvc 'web-data-disk', bound the pv with pvc
+  capacity:
+    storage: 3Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/website-frontend" # this need to be available on the nodes
+---
+# Pods use PersistentVolumeClaims to request physical storage
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: web
+  name: wp-pv-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

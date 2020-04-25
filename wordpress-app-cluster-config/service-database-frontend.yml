@@ -1,19 +1,21 @@
 ---
-# Service for database
+# Service
 apiVersion: v1
 kind: Service
 metadata:
   namespace: database
   name: mysql-service
 spec:
-  ports:
-  - port: 3306
+  type: ClusterIP # there are 3 types (ClusterIP, NodePort, LoadBalancer)
   selector:
-    app: mysql
-    tier: db
-  clusterIP: None
+    # these lables need to match the replicaSet  (sometimes created by replicaSet or deploymets objects)
+    tier: database # Deployment.metadata.labels.tier
+  ports:
+  - protocol: TCP
+    port: 3306
+    targetPort: 3306
 ---
-# Service for webserver
+# Service for webserver (nodePort)
 apiVersion: v1
 kind: Service
 metadata:
@@ -21,8 +23,12 @@ metadata:
   name: frontend-service
 spec:
   ports:
-    - port: 80
+    - name: http
+      protocol: TCP
+      nodePort: 30000 # host port of the worker-node (node)
+      port: 80 # host port of the service expose (service)
+      targetPort: 80 # container port (pod)
   selector:
-    app: wordpress
-    tier: frontend
-  type: LoadBalancer
+    # these lables need to match the replicaSet (sometimes created by replicaSet or deploymets objects)
+    tier: frontend # Deployment.metadata.labels.tier
+  type: NodePort
