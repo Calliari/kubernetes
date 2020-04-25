@@ -167,9 +167,14 @@ kubectl get pods -n kube-system
 ```
 
 ### Joing the node to a cluster (node 1 and node 2)
-Afert get the kubeadm command run on the nodes to joing them into a cluster:
+After get the kubeadm command run on the nodes to joing them into a cluster:
 ```
 sudo kubeadm join $some_ip:6443 --token $some_token --discovery-token-ca-cert-hash $some_hash
+```
+#### In order to make sure each component object gets into it's node assign a lable to the nodes, i.e: `kubectl label nodes <node name> <label-name>=<value>`
+```
+kubectl label nodes db-server node=database
+kubectl label nodes k-node1 node=web
 ```
 
 ### Add this line to /etc/sysctl.conf for 'flannel' plugin to connect the nodes and the master on the same network 

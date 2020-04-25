@@ -1,0 +1,35 @@
+# make sure the path '/mnt/data/' exist on the node where this pv is created (sudo mkdir -p /mnt/data/;ls -sla /mnt/data/)
+---
+# PersistentVolume
+# specifies that the volume is at /mnt/data on the cluster’s Node: EFS, mounted disk and etc
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: database
+  name: mysql-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  claimRef:
+    namespace: database
+    name: mysql-data-disk # claim pvc 'mysql-data-disk', bound the pv with pvc
+  capacity:
+    storage: 3Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data" # this need to be available on the nodes
+---
+# Pods use PersistentVolumeClaims to request physical storage
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: database
+  name: mysql-data-disk
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

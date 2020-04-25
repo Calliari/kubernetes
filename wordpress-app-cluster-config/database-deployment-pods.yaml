@@ -1,0 +1,134 @@
+---
+# Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: database
+  labels:
+    name: database-lb
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: database
+  name: mysql-service
+spec:
+  ports:
+  - port: 3306
+  selector:
+    app: mysql
+  clusterIP: None
+---
+# Secret clientMysqluser
+# for mysql-user echo -n 'mysql-user' | base64 && echo -n 'user-pwd' | base64
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: database
+  name: mysql-secret-username
+  labels:
+    username: mysql-user
+data:
+  username: bXlzcWwtdXNlcg==
+  password: dXNlci1wd2Q=
+---
+# Secret root
+# for root (echo -n 'root-pwd' | base64)
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: database
+  name: mysql-secret-root
+  labels:
+    user: root
+type: Opaque
+data:
+  ROOT_PASSWORD: cm9vdC1wd2Q=
+---
+# PersistentVolume
+# specifies that the volume is at /mnt/data on the cluster’s Node: EFS, mounted disk and etc
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: database
+  name: mysql-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  claimRef:
+    namespace: database
+    name: mysql-data-disk # claim pvc 'mysql-data-disk', bound the pv with pvc
+  capacity:
+    storage: 3Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data" # this need to be available on the nodes
+---
+# Pods use PersistentVolumeClaims to request physical storage
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: database
+  name: mysql-data-disk
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: database
+  name: mysql-pod-deployment
+  labels:
+    zone: prod
+    version: v1
+    tier: database
+spec:
+  # modify replicas according to your case
+  replicas: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      pod-name: mysql-pod # this is the label need to that match the pod's labels (spec.template.labels)
+      zone: prod # this is the label need to that match the pod's labels (spec.template.labels)
+      version: v1 # this is the label need to that match the pod's labels (spec.template.labels)
+  template:
+    metadata:
+      labels:
+        pod-name: mysql-pod # this lablel will be used by the replicaset (spec.selector.matchLabels)
+        zone: prod # this lablel will be used by the replicaset (spec.selector.matchLabels)
+        version: v1 # this lablel will be used by the replicaset (spec.selector.matchLabels)
+    spec:
+      containers:
+      - name: mysql-container
+        image: mysql:5.7.29
+        ports:
+          - containerPort: 3306
+        # container saving the data on 'mountPath' path specified (inside this container)
+        volumeMounts:
+          - mountPath: "/var/lib/mysql"
+            subPath: "mysql"
+            name: mysql-data # volumes name spec.volumes
+        env:
+          # with 'secret' object
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret-root
+                key: ROOT_PASSWORD
+      nodeSelector:
+        node: database # schedule pod to specific node
+      # connect the the 'mountPath' to 'persistentVolumeClaim' name 'mysql-data-disk'
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: mysql-data-disk
+
