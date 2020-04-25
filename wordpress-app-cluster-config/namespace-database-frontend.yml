@@ -1,0 +1,16 @@
+---
+# Namespace database
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: database
+  labels:
+    name: database-lb
+---
+# Namespace web
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: web
+  labels:
+    name: web-lb

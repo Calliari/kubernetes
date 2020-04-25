@@ -1,0 +1,28 @@
+---
+# Service for database
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: database
+  name: mysql-service
+spec:
+  ports:
+  - port: 3306
+  selector:
+    app: mysql
+    tier: db
+  clusterIP: None
+---
+# Service for webserver
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: web
+  name: frontend-service
+spec:
+  ports:
+    - port: 80
+  selector:
+    app: wordpress
+    tier: frontend
+  type: LoadBalancer

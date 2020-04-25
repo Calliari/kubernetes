@@ -1,0 +1,39 @@
+---
+# Namespace web
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: web
+  labels:
+    name: web-lb
+# ---
+# Service for webserver (LoadBalancer)
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   namespace: web
+#   name: frontend-service
+# spec:
+#   ports:
+#     - port: 80
+#   selector:
+#     app: wordpress
+#     tier: frontend
+#   type: LoadBalancer
+---
+# Service for webserver (nodePort)
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: web
+  name: frontend-service
+spec:
+  ports:
+    - port: 80 # host port of the service expose (service)
+      targetPort: 80 # container port (pod)
+      nodePort: 30000 # host port of the worker-node (node)
+  selector:
+    # these lables need to match the replicaSet (sometimes created by replicaSet or deploymets objects)
+    app: wordpress
+    tier: frontend
+  type: NodePort
