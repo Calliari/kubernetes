@@ -201,6 +201,9 @@ Get all nodes assigned to a master on a cluster
 # Get commands with basic output, adding the option (-o wide) can be benefitial because it's add a bit of more details from the objetc requested
 
 ```
+echo "source <(kubectl completion bash)" >> ~/.bashrc # add autocomplete permanently to your bash shell.
+source ~/.bashrc # to make it reload teh session and autocomplete will be ready to work with `kubectl get + TAB`
+
 #
 kubectl get node                              # List all nodes (worker-node)
 kubectl describe node node1                   # Describe a particular node-server (worker-node)
