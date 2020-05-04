@@ -289,7 +289,10 @@ Run some pods commands to get used to the outputs, to delete a this deployemnt r
 `kubectl delete deployments nginx-deployment`
 
 
-
+If neccessary start a busybox pod for debugging, with this pod we can ping the containers and run some cmd insite the cluster to check connectivity: ( `wget -qO- POD_IP_ADDRESS:80`)
+```
+kubectl run busybox --image=busybox --rm -it --restart=Never -- bash
+```
 
 
 ### Deploy the Stan's Robot Shop app to the cluster.
