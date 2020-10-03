@@ -1,4 +1,8 @@
+Create Monitoring Namespace:
+
+```
 apiVersion: v1
 kind: Namespace
 metadata:
   name: monitoring
+```
