@@ -208,38 +208,51 @@ source ~/.bashrc # to make it reload teh session and autocomplete will be ready 
 
 
 #
-kubectl get node                              # List all nodes (worker-node)
-kubectl describe node node1                   # Describe a particular node-server (worker-node)
+kubectl get node                                    # List all nodes (worker-node)
+kubectl describe node node1                         # Describe a particular node-server (worker-node)
 
 #
-kubectl get namespace                         # List all namespace 
-kubectl get namespace my-app                  # List particular namespace 
+kubectl get namespace                               # List all namespace 
+kubectl get namespace my-app                        # List particular namespace 
 
 #
-kubectl get services                          # List all services in the namespace ( service == svc)
-kubectl describe svc nginx-service            # Describe a particular service
-kubectl delete svc nginx-service              # Delete a particular service
-
-
-#
-kubectl get deployment                        # List all deployment
-kubectl describe deployment nginx-service     # Describe a particular deployment
-kubectl delete deployment nginx-deployment    # Delete a particular deployment
+kubectl get services                                # List all services in the namespace ( service == svc)
+kubectl describe svc nginx-service                  # Describe a particular service
+kubectl delete svc nginx-service                    # Delete a particular service
 
 
 #
-kubectl get rs                                # List all replicaSet
-kubectl describe rs nginx-replicaset          # Describe a particular replicaSet
+kubectl get deployment                              # List all deployment
+kubectl describe deployment nginx-service           # Describe a particular deployment
+kubectl delete deployment nginx-deployment          # Delete a particular deployment
 
 
 #
-kubectl get pods --all-namespaces             # List all pods in all namespaces
-kubectl get pods                              # List all deployment (not list the default pods)
-kubectl get pods -o wide                      # List all pods in the namespace, with more details
-kubectl get pod my-pod -o yaml                # Get a pod's YAML
-kubectl get pod my-pod -o yaml --export       # Get a pod's YAML without cluster specific information
-kubectl describe pod nginx-service            # Describe a particular pod
-kubectl delete pod nginx-pod                  # Delete a particular pod
+kubectl get rs                                      # List all replicaSet
+kubectl describe rs nginx-replicaset                # Describe a particular replicaSet
+
+
+#
+kubectl get pods --all-namespaces                   # List all pods in all namespaces
+kubectl get pods                                    # List all deployment (not list the default pods)
+kubectl get pods -o wide                            # List all pods in the namespace, with more details
+kubectl get pod my-pod -o yaml                      # Get a pod's YAML
+kubectl get pod my-pod -o yaml --export             # Get a pod's YAML without cluster specific information
+kubectl describe pod nginx-service                  # Describe a particular pod
+kubectl delete pod nginx-pod                        # Delete a particular pod
+
+
+#
+kubectl logs my-pod                                 # dump pod logs (stdout)
+kubectl logs -l name=myLabel                        # dump pod logs, with label name=myLabel (stdout)
+kubectl logs my-pod --previous                      # dump pod logs (stdout) for a previous instantiation of a container
+kubectl logs my-pod -c my-container                 # dump pod container logs (stdout, multi-container case)
+kubectl logs -l name=myLabel -c my-container        # dump pod logs, with label name=myLabel (stdout)
+kubectl logs my-pod -c my-container --previous      # dump pod container logs (stdout, multi-container case) for a previous instantiation of a container
+kubectl logs -f my-pod                              # stream pod logs (stdout)
+kubectl logs -f my-pod -c my-container              # stream pod container logs (stdout, multi-container case)
+kubectl logs -f -l name=myLabel --all-containers    # stream all pods logs with label name=myLabel (stdout)
+
 
 #
 kubectl get endpoints                         # List of endpoints in your cluster that get created with a service:
