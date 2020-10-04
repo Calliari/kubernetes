@@ -1,5 +1,9 @@
 Set up Prometheus monitoring in a Kubernetes cluster.
 
+#### Reference 
+https://phoenixnap.com/kb/prometheus-kubernetes-monitoring
+https://sysdig.com/blog/kubernetes-monitoring-prometheus
+
 These are option to use k as alias for kubectl and apply/deploy the yaml objects 
 ```
 alias k=kubectl;
@@ -249,6 +253,4 @@ By entering the URL or IP of your node, and by specifying the port from the yml 
 For example: `http://192.153.99.106:30909`
 
 
-#### Reference 
-https://phoenixnap.com/kb/prometheus-kubernetes-monitoring
-https://sysdig.com/blog/kubernetes-monitoring-prometheus/
+
