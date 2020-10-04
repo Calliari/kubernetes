@@ -78,7 +78,7 @@ kubectl proxy
 ```
 
 Access it via the url and click Sign in button and that's it. You are now logged in as an admin.
-`http://127.0.0.1:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/login`
+http://127.0.0.1:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/login
 
 
 
