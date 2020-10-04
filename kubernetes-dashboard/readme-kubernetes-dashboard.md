@@ -19,13 +19,7 @@ kubectl apply -f https://raw.githubusercontent.com/Calliari/kubernetes/verion-1.
 ```
 
 By default kubernetes-dashboard can only be accessible by machine itself and port `localhost:8001` or `127.0.0.1:8001`. 
-This will show the apis available but the grafical interface will be at `http://127.0.0.1:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/login` . (As the kubernetes-dashboard need to be very secure - I will be using binding the access via ssl -L CMD)
-```
-ssh -i PRIVATE-KEY -L 8001:127.0.0.1:8001 SERVER_USER@SERVER_IP_WHERE_kubernetes-dashboard-is-running
-kubectl proxy
-
-```
-
+This will show the apis available but the grafical interface will be at `http://127.0.0.1:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/login` . 
 
 
 And an for of Authentication is required as this is a admin section, so creat a user to access the GUI.
@@ -75,10 +69,16 @@ kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboar
 ```
 
 
-
+(As the kubernetes-dashboard need to be very secure - I will be using the binding access via ssh -L CMD)
 Now copy the token and paste it into Enter token field on the login screen.
-Click Sign in button and that's it. You are now logged in as an admin.
-``
+
+```
+ssh -i PRIVATE-KEY -L 8001:127.0.0.1:8001 SERVER_USER@SERVER_IP_WHERE_kubernetes-dashboard-is-running
+kubectl proxy
+```
+
+Access it via the url and click Sign in button and that's it. You are now logged in as an admin.
+`http://127.0.0.1:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/login`
 
 
 
