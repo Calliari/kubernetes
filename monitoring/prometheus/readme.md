@@ -2,6 +2,7 @@ Set up Prometheus monitoring in a Kubernetes cluster.
 
 #### Reference 
 https://phoenixnap.com/kb/prometheus-kubernetes-monitoring
+
 https://sysdig.com/blog/kubernetes-monitoring-prometheus
 
 These are option to use k as alias for kubectl and apply/deploy the yaml objects 
