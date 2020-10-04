@@ -13,6 +13,8 @@ EOF
 
 ```
 
+<hr/>
+
 #### Prometheus Namespace, ServiceAccount, ClusterRole, ClusterRoleBinding (prometheus-space-sa.yml)
 Tutorial on Prometheus monitoring on Kubernetes Cluster
 Create Monitoring Namespace:
