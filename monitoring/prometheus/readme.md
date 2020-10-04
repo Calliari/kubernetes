@@ -210,16 +210,16 @@ kind: Service
 apiVersion: v1
 metadata:
   name: prometheus-service
+spec:
+  selector:
+    app: prometheus
+  type: NodePort # this is using the nodePort for the service be available (http://NODE-IP-ADDRESS:30909)
   ports:
-   - name: http
-     protocol: TCP
-     nodePort: 30909 # host port of the worker-node (node)
-     port: 9090 # host port of the service expose (service)
-     targetPort: 9090 # container port (pod)
-  spec:
-    selector:
-      app: prometheus
-    type: NodePort # this is using the nodePort for the service be available (http://NODE-IP-ADDRESS:30909)
+  - name: http
+    protocol: TCP
+    port: 9090 # host port of the service expose (service)
+    nodePort: 30909 # host port of the worker-node (node)
+    targetPort: 9090  # container port (pod)
        
 ```
 #### Prometheus ReplicaSet (prometheus-service.yml) (LoadBalancer)
