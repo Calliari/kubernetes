@@ -209,7 +209,7 @@ Prometheus is currently running in the cluster. Adding the following section to 
 kind: Service
 apiVersion: v1
 metadata:
-  name: prometheu-service
+  name: prometheus-service
   ports:
    - name: http
      protocol: TCP
