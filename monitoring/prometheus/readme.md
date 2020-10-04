@@ -1,3 +1,16 @@
+Set up Prometheus monitoring in a Kubernetes cluster.
+
+These are option to use k as alias for kubectl and apply/deploy the yaml objects 
+```
+alias k=kubectl;
+kubectl create -f - <<EOF
+kuberneter yaml objects here
+EOF
+
+```
+
+Tutorial on Prometheus monitoring on Kubernetes Cluster
+
 
 Create Monitoring Namespace:
 ```
@@ -54,56 +67,62 @@ subjects:
   namespace: monitoring
 ```
 
+#### Prometheus ConfigMap
+
 This section of the file provides instructions for the scraping process. Specific instructions for each element of the Kubernetes cluster should be customized to match your monitoring requirements and cluster setup.
 Global Scrape Rules
 ```
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
 data:
   prometheus.yml: |
     global:
-      scrape_interval: 10s
+      scrape_interval:     10s # Set the scrape interval to every 10 seconds. Default is every 1 minute.
+      evaluation_interval: 10s # Evaluate rules every 10 seconds. The default is every 1 minute.
 ```
 
 Scrape Node
 This service discovery exposes the nodes that make up your Kubernetes cluster. The kubelet runs on every single node and is a source of valuable information.
 Scrape kubelet
 ```
-scrape_configs:
-- job_name: 'kubelet'
-  kubernetes_sd_configs:
-  - role: node
-  scheme: https
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true  # Required with Minikube.
+  scrape_configs:
+  - job_name: 'kubelet'
+    kubernetes_sd_configs:
+    - role: node
+    scheme: https
+    tls_config:
+      ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecure_skip_verify: true  # Required with Minikube.
 ```
 
 Scrape cAdvisor (container level information)
 The kubelet only provides information about itself and not the containers. To receive information from the container level, we need to use an exporter. The cAdvisor is already embedded and only needs a metrics_path: /metrics/cadvisor for Prometheus to collect container data:
 ```
-- job_name: 'cadvisor'
-  kubernetes_sd_configs:
-  - role: node
-  scheme: https
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true  # Required with Minikube.
-  metrics_path: /metrics/cadvisor
+  - job_name: 'cadvisor'
+    kubernetes_sd_configs:
+    - role: node
+    scheme: https
+    tls_config:
+      ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecure_skip_verify: true  # Required with Minikube.
+    metrics_path: /metrics/cadvisor
 ```
 
 Scrape APIServer
 Use the endpoints role to target each application instance. This section of the file allows you to scrape API servers in your Kubernetes cluster.
 ```
-- job_name: 'k8apiserver'
-  kubernetes_sd_configs:
-  - role: endpoints
-  scheme: https
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true  # Required if using Minikube.
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  relabel_configs:
-- source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+  - job_name: 'k8apiserver'
+    kubernetes_sd_configs:
+    - role: endpoints
+    scheme: https
+    tls_config:
+      ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecure_skip_verify: true  # Required if using Minikube.
+    bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+    relabel_configs:
+  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
     action: keep
     regex: default;kubernetes;https
 ```
@@ -111,40 +130,38 @@ Use the endpoints role to target each application instance. This section of the 
 Scrape Pods for Kubernetes Services (excluding API Servers)
 Scrape the pods backing all Kubernetes services and disregard the API server metrics.
 ```
-- job_name: 'k8services'
-      kubernetes_sd_configs:
-      - role: endpoints
+  - job_name: 'k8services'
+    kubernetes_sd_configs:
+    - role: endpoints
       relabel_configs:
-      - source_labels:
-          - __meta_kubernetes_namespace
-          - __meta_kubernetes_service_name
-        action: drop
-        regex: default;kubernetes
-      - source_labels:
-          - __meta_kubernetes_namespace
-        regex: default
-        action: keep
-      - source_labels: [__meta_kubernetes_service_name]
-        target_label: job
+        - source_labels:
+            - __meta_kubernetes_namespace
+            - __meta_kubernetes_service_name
+          action: drop
+          regex: default;kubernetes
+        - source_labels:
+            - __meta_kubernetes_namespace
+          regex: default
+          action: keep
+        - source_labels: [__meta_kubernetes_service_name]
+          target_label: job
 ```
 
 Pod Role
 Discover all pod ports with the name metrics by using the container name as the job label.
 ```
-- job_name: 'k8pods'
-      kubernetes_sd_configs:
-      - role: pod
+  - job_name: 'k8pods'
+    kubernetes_sd_configs:
+    - role: pod
       relabel_configs:
       - source_labels: [__meta_kubernetes_pod_container_port_name]
         regex: metrics
         action: keep
       - source_labels: [__meta_kubernetes_pod_container_name]
         target_label: job
-kind: ConfigMap
-metadata:
-  name: prometheus-config
 ```
 
+=====
 
 Configure ReplicaSet
 Define the number of replicas you need, and a template that is to be applied to the defined set of pods.
