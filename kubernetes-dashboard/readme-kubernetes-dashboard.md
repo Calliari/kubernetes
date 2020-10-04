@@ -18,7 +18,13 @@ OR
 kubectl apply -f https://raw.githubusercontent.com/Calliari/kubernetes/verion-1.18/kubernetes-dashboard/kubernetes-dashboard.yml
 ```
 
-By default kubernetes-dashboard can only be accessible by machine itself and port `localhost:8001` or `127.0.0.1:8001`. This will show the apis available but the grafical interface will be at `http://127.0.0.1:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/login` .
+By default kubernetes-dashboard can only be accessible by machine itself and port `localhost:8001` or `127.0.0.1:8001`. 
+This will show the apis available but the grafical interface will be at `http://127.0.0.1:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/login` . (As the kubernetes-dashboard need to be very secure - I will be using binding the access via ssl -L CMD)
+```
+ssh -i PRIVATE-KEY -L 8001:127.0.0.1:8000 SERVER_USER@SERVER_IP_WHERE_kubernetes-dashboard-is-running
+```
+
+
 
 And an for of Authentication is required as this is a admin section, so creat a user to access the GUI.
 https://kubernetes.io/docs/reference/access-authn-authz/authentication/
