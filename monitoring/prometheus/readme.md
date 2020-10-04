@@ -167,7 +167,7 @@ Discover all pod ports with the name metrics by using the container name as the 
 ```
 
 
-#### Prometheus ReplicaSet (prometheus-rs-service.yml)
+#### Prometheus ReplicaSet (prometheus-rs.yml)
 Configure ReplicaSet
 Define the number of replicas you need, and a template that is to be applied to the defined set of pods.
 ```
@@ -201,13 +201,35 @@ spec:
          name: prometheus-config
 ```
 
+#### Prometheus ReplicaSet (prometheus-service.yml) (nodePort)
 Define nodePort
+Prometheus is currently running in the cluster. Adding the following section to our prometheus.yml file is going to give us access to the data Prometheus has collected.
+```
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: prometheu-service
+spec:
+  selector:
+    app: prometheus
+  type: NodePort # this is using the nodePort for the service be available (http://NODE-IP-ADDRESS:30909)
+  ports:
+  - protocol: TCP
+    port: 9090 # host port of the service expose (service)
+    nodePort: 30909 # host port of the worker-node (node)
+    targetPort: 9090 # container port (pod)
+
+        
+```
+#### Prometheus ReplicaSet (prometheus-service.yml) (LoadBalancer)
+Define LoadBalancer
 Prometheus is currently running in the cluster. Adding the following section to our prometheus.yml file is going to give us access to the data Prometheus has collected.
 ```
 kind: Service
 apiVersion: v1
 metadata:
-  name: prometheus
+  name: prometheus-service
 spec:
   selector:
     app: prometheus
@@ -218,6 +240,8 @@ spec:
     targetPort: 9090
     nodePort: 30909
 ```
+
+
 
 #### Use the individual node URL and the nodePort defined in the prometheus.yml file to access Prometheus from your browser. 
 By entering the URL or IP of your node, and by specifying the port from the yml file, you have successfully gained access to Prometheus Monitoring.
