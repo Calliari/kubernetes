@@ -1,6 +1,9 @@
 # kubernetes-dashboard GUI
 https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
 
+#### References 
+https://github.com/kubernetes/dashboard
+
 This is a kubernetes dashboard that allows to manage and configure the kubernetes cluster from GUI
 
 After all setting and configuration are done to have the kubernetes cluster up and running do the fowwling to install and run the kubernetes-dashboard GUI.
@@ -10,7 +13,7 @@ alias k=kubectl # to make a k as a short for kubectl
 
 Deploy the dashboard from:
 ```
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
+kubectl apply -f kubernetes-dashboard.yml
 
 ```
 
@@ -66,6 +69,7 @@ kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboar
 
 Now copy the token and paste it into Enter token field on the login screen.
 Click Sign in button and that's it. You are now logged in as an admin.
+``
 
 
 
