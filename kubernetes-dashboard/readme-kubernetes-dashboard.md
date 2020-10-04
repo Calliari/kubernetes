@@ -11,10 +11,11 @@ After all setting and configuration are done to have the kubernetes cluster up a
 
 alias k=kubectl # to make a k as a short for kubectl
 
-Deploy the dashboard from:
+Deploy the dashboard from the file saved on this repo ro direcly from the url on this repo:
 ```
 kubectl apply -f kubernetes-dashboard.yml
-
+OR
+kubectl apply -f https://raw.githubusercontent.com/Calliari/kubernetes/verion-1.18/kubernetes-dashboard/kubernetes-dashboard.yml
 ```
 
 By default kubernetes-dashboard can only be accessible by machine itself and port `localhost:8001` or `127.0.0.1:8001`. This will show the apis available but the grafical interface will be at `http://127.0.0.1:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/login` .
