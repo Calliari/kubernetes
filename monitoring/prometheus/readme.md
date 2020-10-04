@@ -244,7 +244,6 @@ spec:
 ```
 
 
-
 #### Use the individual node URL and the nodePort defined in the prometheus.yml file to access Prometheus from your browser. 
 By entering the URL or IP of your node, and by specifying the port from the yml file, you have successfully gained access to Prometheus Monitoring.
 For example: `http://192.153.99.106:30909`
@@ -252,3 +251,4 @@ For example: `http://192.153.99.106:30909`
 
 #### Reference 
 https://phoenixnap.com/kb/prometheus-kubernetes-monitoring
+https://sysdig.com/blog/kubernetes-monitoring-prometheus/
