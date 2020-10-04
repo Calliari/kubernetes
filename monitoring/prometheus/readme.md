@@ -174,6 +174,7 @@ Define the number of replicas you need, and a template that is to be applied to 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: monitoring
   name: prometheus
 spec:
   selector:
@@ -201,7 +202,7 @@ spec:
          name: prometheus-config
 ```
 
-#### Prometheus ReplicaSet (prometheus-service.yml) (nodePort)
+#### Prometheus Service (prometheus-service.yml) (nodePort)
 Define nodePort
 Prometheus is currently running in the cluster. Adding the following section to our prometheus.yml file is going to give us access to the data Prometheus has collected.
 ```
@@ -222,7 +223,7 @@ spec:
     targetPort: 9090  # container port (pod)
        
 ```
-#### Prometheus ReplicaSet (prometheus-service.yml) (LoadBalancer)
+#### Prometheus Service (prometheus-service.yml) (LoadBalancer)
 Define LoadBalancer
 Prometheus is currently running in the cluster. Adding the following section to our prometheus.yml file is going to give us access to the data Prometheus has collected.
 ```
