@@ -31,8 +31,8 @@ Create Service Account for Monitoring
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: prometheus
   namespace: monitoring
+  name: prometheus-service-sccount
 ```
 
 #### Prometheus ClusterRole, ClusterRoleBinding (prometheus-sr-srb.yml)
@@ -83,7 +83,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   namespace: monitoring
-  name: prometheus-config
+  name: prometheus-config-map
   labels:
     name: prometheus-ConfigMap
 data:
@@ -181,7 +181,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: monitoring
-  name: prometheus
+  name: prometheus-deployment
 spec:
   selector:
     matchLabels:
@@ -205,7 +205,7 @@ spec:
       volumes:
       - name: config-volume
         configMap:
-         name: prometheus-config
+         name: prometheus-config-map
 ```
 
 #### Prometheus Service (prometheus-service.yml) (nodePort)
@@ -216,16 +216,17 @@ Prometheus is currently running in the cluster. Adding the following section to 
 kind: Service
 apiVersion: v1
 metadata:
+  namespace: monitoring
   name: prometheus-service
 spec:
   selector:
     app: prometheus
-  type: NodePort # this is using the nodePort for the service be available (http://NODE-IP-ADDRESS:30909)
+  type: NodePort # this is using the nodePort for the service be available (http://NODE-IP-ADDRESS:30090)
   ports:
   - name: http
     protocol: TCP
     port: 9090 # host port of the service expose (service)
-    nodePort: 30909 # host port of the worker-node (node)
+    nodePort: 30090 # host port of the worker-node (node)
     targetPort: 9090  # container port (pod)
        
 ```
@@ -236,6 +237,7 @@ Prometheus is currently running in the cluster. Adding the following section to 
 kind: Service
 apiVersion: v1
 metadata:
+  namespace: monitoring
   name: prometheus-service
 spec:
   selector:
