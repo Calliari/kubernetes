@@ -295,7 +295,7 @@ By entering the URL or IP of your node, and by specifying the port from the yml 
 For example: `http://192.153.99.106:30090`
 
 
-Checking all the pbject created with a flag `-o` and `wide`
+Checking all the objects created with a flag `-o` and `wide`
 ```
 k -n monitoring get ns -o wide
 k -n monitoring get sa -o wide
