@@ -40,7 +40,7 @@ metadata:
 
 `k -n monitoring get sa`
 
-#### Prometheus ClusterRole, ClusterRoleBinding (prometheus-sr-srb.yml)
+#### Prometheus ClusterRole, ClusterRoleBinding (prometheus-cr-crb.yml)
 Define Cluster Role for Monitoring
 ```
 ---
