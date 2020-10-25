@@ -31,17 +31,18 @@ Create Service Account for Monitoring
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  namespace: monitoring
+  namespace: monitoring-sa
   name: prometheus-service-sccount
 ```
 
 #### Prometheus ClusterRole, ClusterRoleBinding (prometheus-sr-srb.yml)
 Define Cluster Role for Monitoring
 ```
+---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: prometheus
+  name: prometheus-cr
 rules:
 - apiGroups: [""]
   resources:
@@ -59,17 +60,18 @@ rules:
 
 Define ClusterRoleBinding for Monitoring (By adding these resources to our file, we have granted Prometheus cluster-wide access from the monitoring namespace.)
 ```
+---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: prometheus
+  name: prometheus-crb
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: prometheus
+  name: prometheus-cr
 subjects:
 - kind: ServiceAccount
-  name: prometheus
+  name: prometheus-sa
   namespace: monitoring
 ```
 
@@ -83,14 +85,22 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   namespace: monitoring
-  name: prometheus-config-map
+  name: prometheus-cm
   labels:
     name: prometheus-ConfigMap
 data:
-  prometheus.yml: |
+  prometheus.yml: |-
     global:
       scrape_interval:     10s # Set the scrape interval to every 10 seconds. Default is every 1 minute.
       evaluation_interval: 10s # Evaluate rules every 10 seconds. The default is every 1 minute.
+
+    scrape_configs:
+      - job_name: prometheus
+        static_configs:
+          - targets: ["localhost:9090"]
+      - job_name: node_exporter
+        static_configs:
+          - targets: ["localhost:9100"]
 ```
 
 Scrape Node
@@ -173,7 +183,7 @@ Discover all pod ports with the name metrics by using the container name as the 
 ```
 
 
-#### Prometheus ReplicaSet (prometheus-rs.yml)
+#### Prometheus ReplicaSet (prometheus-deploy-rs.yml)
 Configure ReplicaSet
 Define the number of replicas you need, and a template that is to be applied to the defined set of pods.
 ```
@@ -182,17 +192,19 @@ kind: Deployment
 metadata:
   namespace: monitoring
   name: prometheus-deployment
+  labels:
+    app: prometheus-deployment
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: prometheus
-  replicas: 1
   template:
     metadata:
       labels:
         app: prometheus
     spec:
-      serviceAccountName: prometheus
+      serviceAccountName: prometheus-sa
       containers:
       - name: prometheus
         image: prom/prometheus:v2.1.0
@@ -205,7 +217,7 @@ spec:
       volumes:
       - name: config-volume
         configMap:
-         name: prometheus-config-map
+         name: prometheus-cm
 ```
 
 #### Prometheus Service (prometheus-service.yml) (nodePort)
@@ -217,7 +229,9 @@ kind: Service
 apiVersion: v1
 metadata:
   namespace: monitoring
-  name: prometheus-service
+  name: prometheus-svc
+  labels:
+    app: prometheus-svc-NodePort
 spec:
   selector:
     app: prometheus
@@ -238,7 +252,9 @@ kind: Service
 apiVersion: v1
 metadata:
   namespace: monitoring
-  name: prometheus-service
+  name: prometheus-svc
+  labels:
+    app: prometheus-svc-LoadBalancer
 spec:
   selector:
     app: prometheus
@@ -247,14 +263,14 @@ spec:
   - protocol: TCP
     port: 9090
     targetPort: 9090
-    nodePort: 30909
+    nodePort: 30090
         
 ```
 
 
 #### Use the individual node URL and the nodePort defined in the prometheus.yml file to access Prometheus from your browser. 
 By entering the URL or IP of your node, and by specifying the port from the yml file, you have successfully gained access to Prometheus Monitoring.
-For example: `http://192.153.99.106:30909`
+For example: `http://192.153.99.106:30090`
 
 
 
