@@ -26,6 +26,9 @@ metadata:
   name: monitoring
 ```
 
+`k -n monitoring get ns`
+
+
 Create Service Account for Monitoring
 ```
 apiVersion: v1
@@ -34,6 +37,8 @@ metadata:
   namespace: monitoring-sa
   name: prometheus-service-sccount
 ```
+
+`k -n monitoring get sa`
 
 #### Prometheus ClusterRole, ClusterRoleBinding (prometheus-sr-srb.yml)
 Define Cluster Role for Monitoring
@@ -58,6 +63,8 @@ rules:
   verbs: ["get", "list", "watch"]
 ```
 
+`k get ClusterRole`
+
 Define ClusterRoleBinding for Monitoring (By adding these resources to our file, we have granted Prometheus cluster-wide access from the monitoring namespace.)
 ```
 ---
@@ -75,7 +82,10 @@ subjects:
   namespace: monitoring
 ```
 
-#### Prometheus ConfigMap (prometheus-ConfigMap.yml)
+
+`k get ClusterRoleBinding`
+
+#### Prometheus ConfigMap (prometheus-configMap.yml)
 
 This section of the file provides instructions for the scraping process. Specific instructions for each element of the Kubernetes cluster should be customized to match your monitoring requirements and cluster setup.
 Global Scrape Rules
@@ -102,6 +112,8 @@ data:
         static_configs:
           - targets: ["localhost:9100"]
 ```
+
+`k -n monitoring get cm`
 
 Scrape Node
 This service discovery exposes the nodes that make up your Kubernetes cluster. The kubelet runs on every single node and is a source of valuable information.
@@ -187,6 +199,7 @@ Discover all pod ports with the name metrics by using the container name as the 
 Configure ReplicaSet
 Define the number of replicas you need, and a template that is to be applied to the defined set of pods.
 ```
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -198,15 +211,15 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: prometheus
+      app: prometheus-app
   template:
     metadata:
       labels:
-        app: prometheus
+        app: prometheus-app
     spec:
       serviceAccountName: prometheus-sa
       containers:
-      - name: prometheus
+      - name: prometheus-app
         image: prom/prometheus:v2.1.0
         ports:
         - containerPort: 9090
@@ -219,6 +232,9 @@ spec:
         configMap:
          name: prometheus-cm
 ```
+
+`k -n monitoring get deploy`
+
 
 #### Prometheus Service (prometheus-service.yml) (nodePort)
 Define nodePort
@@ -234,7 +250,7 @@ metadata:
     app: prometheus-svc-NodePort
 spec:
   selector:
-    app: prometheus
+    app: prometheus-app # this is where the service would be binding the traffic to expose
   type: NodePort # this is using the nodePort for the service be available (http://NODE-IP-ADDRESS:30090)
   ports:
   - name: http
@@ -244,6 +260,8 @@ spec:
     targetPort: 9090  # container port (pod)
        
 ```
+
+
 #### Prometheus Service (prometheus-service.yml) (LoadBalancer)
 Define LoadBalancer
 Prometheus is currently running in the cluster. Adding the following section to our prometheus.yml file is going to give us access to the data Prometheus has collected.
@@ -257,7 +275,7 @@ metadata:
     app: prometheus-svc-LoadBalancer
 spec:
   selector:
-    app: prometheus
+    app: prometheus-app # this is where the service would be binding the traffic to expose (app = container running inside pod)
   type: LoadBalancer
   ports:
   - protocol: TCP
