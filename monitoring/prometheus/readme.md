@@ -105,12 +105,30 @@ data:
       evaluation_interval: 10s # Evaluate rules every 10 seconds. The default is every 1 minute.
 
     scrape_configs:
-      - job_name: prometheus
+    
+      - job_name: 'prometheus'
+        scrape_interval: 5s
         static_configs:
-          - targets: ["localhost:9090"]
+        - targets: ['localhost:9090']
+          
       - job_name: node_exporter
         static_configs:
           - targets: ["localhost:9100"]
+          
+      - job_name: 'kubernetes-service-endpoints'
+        kubernetes_sd_configs:
+        - role: endpoints
+        relabel_configs:
+        - action: labelmap
+          regex: __meta_kubernetes_service_label_(.+)
+        - source_labels: [__meta_kubernetes_namespace]
+          action: replace
+          target_label: kubernetes_namespace
+        - source_labels: [__meta_kubernetes_service_name]
+          action: replace
+          target_label: kubernetes_name
+
+
 ```
 
 `k -n monitoring get cm`
