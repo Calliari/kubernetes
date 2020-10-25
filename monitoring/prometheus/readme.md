@@ -261,6 +261,8 @@ spec:
        
 ```
 
+`k -n monitoring get svc`
+
 
 #### Prometheus Service (prometheus-service.yml) (LoadBalancer)
 Define LoadBalancer
@@ -285,10 +287,22 @@ spec:
         
 ```
 
+`k -n monitoring get svc`
+
 
 #### Use the individual node URL and the nodePort defined in the prometheus.yml file to access Prometheus from your browser. 
 By entering the URL or IP of your node, and by specifying the port from the yml file, you have successfully gained access to Prometheus Monitoring.
 For example: `http://192.153.99.106:30090`
 
 
+Checking all the pbject created with a flag `-o` and `wide`
+```
+k -n monitoring get ns -o wide
+k -n monitoring get sa -o wide
+k get ClusterRole -o wide
+k get ClusterRoleBinding -o wide
+k -n monitoring get cm -o wide
+k -n monitoring get deploy -o wide
+k -n monitoring get svc -o wide
+```
 
