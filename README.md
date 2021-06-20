@@ -203,9 +203,24 @@ Get all nodes assigned to a master on a cluster
 ```
 echo "source <(kubectl completion bash)" >> ~/.bashrc # add autocomplete permanently to your bash shell.
 echo "alias k=kubectl" >> ~/.bashrc # in case an optional invocation of 'kubectl' with 'k' wanted
-source ~/.bashrc # to make it reload teh session and autocomplete will be ready to work with `kubectl get + TAB`
+```
 
+Some more alias that helps for the CKA certification
 
+```
+alias k='kubectl'
+alias kc='kubectl create -f'
+alias kr='kubectl run'
+alias kg='kubectl get'
+alias kd='kubectl describe'
+alias ke='kubectl explain'
+alias kx='kubectl expose'
+```
+
+Reload the session
+```
+source ~/.bashrc # to make it reload the session and autocomplete will be ready to work with `kubectl get + TAB`
+```
 
 #
 kubectl get node                                    # List all nodes (worker-node)
