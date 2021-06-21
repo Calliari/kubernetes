@@ -1,4 +1,4 @@
-# kubernetes
+# kubernetes 1.21 version
 This is a kubernetes cluster from scratch 
 
 For this simple cluster to work 3 servers are needed.
