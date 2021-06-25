@@ -1,10 +1,10 @@
-# kubernetes 1.21 version
+# kubernetes 1.21 version (Building a Kubernetes Cluster)
 This is a kubernetes cluster from scratch 
 
 For this simple cluster to work 3 servers are needed.
- - 1 for kubernetes master
- - 1 for kubernetes node 1
- - 1 for kubernetes node 2
+ - 1 for kubernetes master  (control-plane)
+ - 1 for kubernetes node 1  (worker-node)
+ - 1 for kubernetes node 2  (worker-node)
 
 
 ```
@@ -20,100 +20,157 @@ For this simple cluster to work 3 servers are needed.
 ```
 
 
-### Install all these packages on all 3 servers
-  - Install and test docker(18.06.1~ce~3-0~ubuntu) 90 installation 
+# First let's start with tmux in order to configure the 3 servers at the same time, until we neeed to apply configurations for each role. (for more info https://github.com/Calliari/shell-script/edit/master/linux-ubuntu-shell/tmux/tmux.md)
 ```
-sudo apt-get update -y
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository \
-   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-   $(lsb_release -cs) \
-   stable"
-
-sudo apt-get update -y
-sudo apt-get install -y docker-ce=18.06.1~ce~3-0~ubuntu && sudo apt-mark hold docker-ce
-sudo docker version
-
+sudo apt-get install tmux -y
 ```
 
-  - Install kubelet(1.12.7-00), kubeadm(1.12.7-00), and kubectl(1.12.7-00) - test kubeadm installation
+
+### Install and configure this on servers (masters and worker-nodes) all these packages/configuration on all 3 servers (On all nodes)
+
+#### Modify the entry hosts to make sure the servers can communicate with eachother:
 ```
+tee -a /etc/hosts << EOT
+172.30.0.10 k8s-control
+172.30.0.11 k8s-worker1
+172.30.0.12 k8s-worker2
+EOT
+```
+
+#### Configure the kernel modules (enabled the "overlay & br_netfilter") and install the containerd
+```
+cat << EOF | sudo tee /etc/modules-load.d/containerd.conf
+overlay
+br_netfilter
+EOF
+```
+#### enabled the "overlay & br_netfilter"
+```
+sudo modprobe overlay
+sudo modprobe br_netfilter
+```
+
+#### Settings for kubernetes networking and reload the 'sysctl'
+```
+cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.ipv4.ip_forward                 = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+EOF
+
+sudo sysctl --system
+```
+
+#### Install and configure containerd.
+```
+sudo apt-get update && sudo apt-get install -y containerd
+sudo mkdir -p /etc/containerd
+sudo containerd config default | sudo tee /etc/containerd/config.toml
+sudo systemctl restart containerd
+```
+
+##### swap needs to be disabled for cluster configuration from the command-line and when rebooted (/etc/fstab)
+```
+sudo swapoff -a 
+sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+```
+
+  - Install the (apt-transport-https curl) and add GPG-key for the kubernetes repository
+```
+sudo apt-get update && sudo apt-get install -y apt-transport-https curl
+
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 
 cat << EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
 deb https://apt.kubernetes.io/ kubernetes-xenial main
 EOF
-
-sudo apt-get update -y
-sudo apt-get install -y kubelet=1.12.7-00 kubeadm=1.12.7-00 kubectl=1.12.7-00 && sudo apt-mark hold kubelet kubeadm kubectl
-kubeadm version
-
 ```
 
-### Initialize the cluster
-On the Kube master node only:
+  - Install kubelet(1.12.7-00), kubeadm(1.12.7-00), and kubectl(1.12.7-00) - test kubeadm installation
 ```
-sudo kubeadm init --pod-network-cidr=10.244.0.0/16
-```
-When it is done, set up the local kubeconfig with create a Kube-home DIR and use the configuration the default configuration also change the ownership of the configuration file
-```
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
+sudo apt-get update 
+sudo apt-get install -y kubelet=1.21.0-00 kubeadm=1.21.0-00 kubectl=1.21.0-00
 ```
 
-Copy and run the command on the nodes when a similar line prompt from the `sudo kubeadm init --pod-network-cidr=10.244.0.0/16` CMD
-
+  - Locking packages, preventing these packages to be automatically updated/upgraded (kubelet kubeadm kubectl)
 ```
-You can now join any number of machines by running the following on each node
-as root:
-
-kubeadm join $some_ip:6443 --token $some_token --discovery-token-ca-cert-hash $some_hash
-
+sudo apt-mark hold kubelet kubeadm kubectl
 ```
-Verify that the cluster is responsive and that Kubectl is working
-```
-kubectl version
-```
-Verify that all nodes have successfully joined the cluster
-```
-kubectl get nodes
 
+## 1. On the Kube master node only (control-plane):
+### Initialize the cluster with the kubernetes version and the CIDR block for containers/pods
 ```
-Or the JOIN NODE to a CLUSTER can retrived from `kubeadm token create --print-join-command` CMD
+sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --kubernetes-version 1.21.0
+```
+
+When this is done, set up the local kubeconfig with create a Kube-home DIR and use the configuration the default configuration also change the ownership of the configuration file (this is the output from the "kubeadm init" CMD)
+```
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
+#### Install the Calico network add-on (calico-kubernetes-network-plugin)
+```
+kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+```
+
+#### Then you can join any number of worker nodes by running the following on each as root:
+Get the join command (this command is also printed during kubeadm init. Feel free to simply copy it from there) `kubeadm token create --print-join-command`
 
 
-### Joing the node to a cluster (node 1 and node 2)
-Afert get the kubeadm command run on the nodes to joing them into a cluster:
+## 2. On the worker-nodes only (worker-node):
+#### Get the join command (this command is also printed during kubeadm init.)
+Copy the join command from the control plane node. Run it on each worker node as root (i.e. with sudo)
 ```
 sudo kubeadm join $some_ip:6443 --token $some_token --discovery-token-ca-cert-hash $some_hash
 ```
 
-### Add this line to /etc/sysctl.conf for 'flannel' plugin to connect the nodes and the master on the same network 
-```
-echo "net.bridge.bridge-nf-call-iptables=1" | sudo tee -a /etc/sysctl.conf
-```
-### sysctl - configure kernel parameters at runtime. To Load in sysctl settings from the file specified or /etc/sysctl.conf
-```
-sudo sysctl -p
-```
+### The kubernetes cluster should be up and running (control-plane)
+=================================================================================
 
-### Install Flannel-plugin (CNI) for the pods communication (translating over the container's ip and the node's ip addresses) in the cluster by running this on the Master node ONLY!
-More info about the CNI plugins  here ==> https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#pod-network
-
-And more info about the 'add-ons' which extend the functionality of Kubernetes. ==> https://kubernetes.io/docs/concepts/cluster-administration/addons/
+##### Verify that the cluster is responsive and that Kubectl is working
 ```
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/bc79dd1505b0c8681ece4de4c0d86c5cd2643275/Documentation/kube-flannel.yml
+kubectl version
 ```
+##### Verify that all nodes have successfully joined the cluster
+```
+kubectl get nodes
 
-### To verify that the Flannel pods are up and running. Run this command to get a list of system pods:
+```
+##### To verify that the Flannel pods are up and running. Run this command to get a list of system pods:
 ```
 kubectl get pods -n kube-system
 ```
+=================================================================================
+
+#### Some more alias that helps for the CKA certification
+```
+echo "source <(kubectl completion bash)" >> ~/.bashrc # add autocomplete permanently to your bash shell.
+```
+
+#### Aliases
+```
+cat <<EOF >> ~/.bash_profile
+alias k='kubectl'
+alias kc='kubectl create -f'
+alias kr='kubectl run'
+alias kg='kubectl get'
+alias kd='kubectl describe'
+alias ke='kubectl explain'
+alias kx='kubectl expose'
+EOF
+```
+
+#### Reload the session
+source ~/.bashrc # to make it reload the session and autocomplete will be ready to work with `kubectl get + TAB`
+source ~/.bash_profile # to make it reload the aliases
+
+
+ 
 
 ### The kubernetes cluster should be up and running with one master and nodes
 =================================================================================
-
 
 ## To interact with the `nodes` we need to run commands from the `master (controller)`
 Get all (pods, service, deployment)
@@ -139,18 +196,19 @@ kubectl get endpoints                         # List of endpoints in your cluste
 ```
 
 Get logs, debugs from node:
-`kubectl get node $pod_name`
-`kubectl describe node $pod_name`
+`kubectl get node $node_name_here`
+`kubectl describe node $node_name_here`
 
 Pods CMD
 `kubectl get pods --all-namespaces`
-`kubectl get pods -o wide`
 
 To get logs, debug a pod we run:
-`kubectl get pods $pod_name`
-`kubectl describe pods $pod_name`
+`kubectl get pods $pod_name_here` # if the 'namespace' is not explicity definided, kubernetes will use the 'default' namespace
+`kubectl get pods $pod_name_here --namespace $namespace_here`
+`kubectl get pods $pod_name_here -o wide --namespace $namespace_here`
+`kubectl describe pods $pod_name_here`
 
-### Deploy one POD to the cluster.
+### Deploy one POD to the cluster with a 'Deployment' object template.
 =================================================================================
 ```
 cat <<EOF | kubectl create -f -
