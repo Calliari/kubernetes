@@ -72,7 +72,7 @@ kubectl get pods -o wide
 kubectl drain cka-worker-node1 --ignore-daemonsets --force
 ```
 
-Uncordon the node to allow new pods to be scheduled there again (getting the node out or maintenance, node back to ready status)
+### Uncordon the node to allow new pods to be scheduled there again (getting the node out or maintenance, putting the node back to ready status to work)
 ```
 kubectl uncordon  cka-worker-node1
 ```
