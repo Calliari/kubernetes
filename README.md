@@ -216,6 +216,7 @@ alias kg='kubectl get'
 alias kd='kubectl describe'
 alias ke='kubectl explain'
 alias kx='kubectl expose'
+alias kexec='kubectl exec'
 ```
 
 Reload the session
