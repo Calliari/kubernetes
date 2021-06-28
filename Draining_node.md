@@ -1,4 +1,4 @@
-#### We need some pods to be up and running, first, create a pod:
+### We need some pods to be up and running, first, create a pod:
 ```
 cat << EOF | tee my-nginx-pod.yml
 apiVersion: v1 # for versions before 1.9.0 use apps/v1beta2
@@ -20,7 +20,7 @@ EOF
 kubectl -f apply my-nginx-pod.yml
 ```
 
-#### Create a deployment with two replicas
+### Create a deployment with two replicas
 
 ```
 cat << EOF | tee my-nginx-deployment.yml
@@ -67,7 +67,7 @@ kubectl get pods -o wide
 ```
 
 
-#### Drain the node which the 'cka-worker-node1' pods are running (puttin the node in maintenance)
+### Drain the node which the 'cka-worker-node1' pods are running (puttin the node in maintenance)
 ```
 kubectl drain cka-worker-node1 --ignore-daemonsets --force
 ```
@@ -77,7 +77,7 @@ Uncordon the node to allow new pods to be scheduled there again (getting the nod
 kubectl uncordon  cka-worker-node1
 ```
 
-#### Delete the deployment created for this drain-test
+### Delete the deployment created for this drain-test
 ```
 kubectl delete deployment my-nginx-deployment
 kubectl delete pod my-nginx-pod
