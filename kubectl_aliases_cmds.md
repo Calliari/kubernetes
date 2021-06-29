@@ -38,24 +38,23 @@ kubectl get endpoints                         # List of endpoints in your cluste
 
 ```
 
-Get all (pods, services, deployments)
-`kubectl get all`
+Get all (pods, services, deployments) `kubectl get all`
 
-Get all nodes assigned to a master on a cluster
-`kubectl get nodes`
-`kubectl get nodes -o wide`
+Get all nodes assigned to a master on a cluster `kubectl get nodes` or `kubectl get nodes -o wide`
 
-Get logs, debugs from node:
-`kubectl get node $node_name_here`
-`kubectl describe node $node_name_here`
+Get logs, debugs from node `kubectl get node $node_name_here` and  `kubectl describe node $node_name_here`
 
-Pods CMD
-`kubectl get pods --all-namespaces`
+Get all Pods CMD on all namespaces:
+```
+kubectl get pods --all-namespaces
+```
 
 To get logs, debug a pod we run:
-`kubectl get pods $pod_name_here` # if the 'namespace' is not explicity definided, kubernetes will use the 'default' namespace
-`kubectl get pods $pod_name_here --namespace $namespace_here`
-`kubectl get pods $pod_name_here -o wide --namespace $namespace_here`
-`kubectl describe pods $pod_name_here`
+```
+kubectl get pods $pod_name_here                                     # if the 'namespace' is not explicity definided, kubernetes will use the 'default' namespace
+kubectl get pods $pod_name_here --namespace $namespace_here         # with namespace 
+kubectl get pods $pod_name_here -o wide --namespace $namespace_here # with a bit of more info
+kubectl describe pods $pod_name_here                                # with a description of the object pod
+```
 
 
