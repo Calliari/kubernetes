@@ -8,14 +8,15 @@ For this simple cluster to work 3 servers are needed.
 
 
 ```
+   control-plane           worker-node            worker-node
 |-------------------|  |-------------------|  |-------------------| 
 | kubernetes master |  | kubernetes node 1 |  | kubernetes node 2 |
 |-------------------|  |-------------------|  |-------------------| 
-| docker            |  | docker            |  | docker            |
+| containerd        |  | containerd        |  | containerd        |
 | kubeadm           |  | kubeadm           |  | kubeadm           |
 | kubelet           |  | kubelet           |  | kubelet           |
 | kubectl           |  | kubectl           |  | kubectl           |
-| control plane     |  |-------------------|  |-------------------|
+|                   |  |-------------------|  |-------------------|
 |-------------------|  
 ```
 
@@ -25,9 +26,8 @@ For this simple cluster to work 3 servers are needed.
 sudo apt-get install tmux -y
 ```
 
-
+#############| control-planes & worker-nodes |###################################################
 ### Install and configure this on servers (masters and worker-nodes) all these packages/configuration on all 3 servers (On all nodes)
-
 #### Modify the entry hosts to make sure the servers can communicate with eachother:
 ```
 tee -a /etc/hosts << EOT
@@ -97,6 +97,7 @@ sudo apt-get install -y kubelet=1.21.0-00 kubeadm=1.21.0-00 kubectl=1.21.0-00
 sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
+#############| control-planes |###################################################
 ## 1. On the Kube master node only (control-plane):
 ### Initialize the cluster with the kubernetes version and the CIDR block for containers/pods
 ```
@@ -118,7 +119,7 @@ kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 #### Then you can join any number of worker nodes by running the following on each as root:
 Get the join command (this command is also printed during kubeadm init. Feel free to simply copy it from there) `kubeadm token create --print-join-command`
 
-
+#############| worker-nodes |###################################################
 ## 2. On the worker-nodes only (worker-node):
 #### Get the join command (this command is also printed during kubeadm init.)
 Copy the join command from the control plane node. Run it on each worker node as root (i.e. with sudo)
@@ -138,10 +139,13 @@ kubectl version
 kubectl get nodes
 
 ```
-##### To verify that the Flannel pods are up and running. Run this command to get a list of system pods:
+##### To verify that the Calico(plugin) pods are up and running. Run this command to get a list of system pods:
 ```
 kubectl get pods -n kube-system
 ```
+
+
+
 =================================================================================
 
 #### Some more alias that helps for the CKA certification
