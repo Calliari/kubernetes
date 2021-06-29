@@ -7,7 +7,7 @@ echo "source <(kubectl completion bash)" >> ~/.bashrc # add autocomplete permane
 ```
 cat <<EOF >> ~/.bash_profile
 alias k='kubectl'
-alias kc='kubectl create -f' # 'create' and 'apply' are similar but 'create' would trown an error if object already exist, 'apply' woundn't.
+alias kc='kubectl create -f' # 'create' and 'apply' are similar but 'create' would trown an error if object already exist, 'apply'wouldn't.
 alias ka='kubectl apply -f'
 alias kr='kubectl run'
 alias kg='kubectl get'
