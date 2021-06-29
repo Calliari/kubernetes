@@ -14,3 +14,8 @@ kubectl scale deployment my-deployment replicas=5 --record
 ```
 kubectl describe deployment my-deployment
 ```
+
+### Create an 'Service Account' on the 'default' namespace imperatively quick
+```
+kubectl create sa my-serviceaccount -n default
+```
