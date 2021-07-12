@@ -34,7 +34,7 @@ kubectl get deployment my-dep                 # List a particular deployment
 kubectl get pods                              # List all pods in the namespace
 kubectl get pod my-pod -o yaml                # Get a pod's YAML
 kubectl get pod my-pod -o yaml --export       # Get a pod's YAML without cluster specific information
-kubectl get endpoints                         # List of endpoints in your cluster that get created with a service:
+kubectl get endpoints                         # List of endpoints in your cluster that get created with a service: (it shows also the IP of the pods that the service is directing traffic to)
 kubectl get sa -n default                     # Get service-account from default namespace
 
 ```
