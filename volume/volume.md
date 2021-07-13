@@ -49,22 +49,19 @@ metadata:
 spec:
   containers:
   - name: busybox1
-  - image: busybox
+    image: busybox
     command: ['sh', '-c', 'while true; do echo Success! > /output/success.txt; sleep; done']
     volumeMounts:
      - name: my-volume
        mountPath: /output # This path will be on the pod (containers: busybox1)
- 
   - name: busybox2
-  - image: busybox
+    image: busybox
     command: ['sh', '-c', 'while true; do cat /input/success.txt; sleep; done']
     volumeMounts:
      - name: my-volume
        mountPath: /input # This path will be on the pod (containers: busybox2)
   volumes:
   - name: my-volume
-    emptDir:
-      path: {} # This path will ...
-
+    emptyDir: {} # Which is erased when a pod is removed/destroyed/terminated
 EOF
 ```
