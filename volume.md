@@ -44,7 +44,7 @@ EOF
 
 ```
 # Get the StorageClass
-kubectl get pod sc -o wide
+kubectl get sc -o wide
 ```
 
 
@@ -69,7 +69,7 @@ EOF
 
 ```
 # Get the PersistentVolume
-kubectl get pod pv -o wide
+kubectl get pv -o wide
 ```
 
 3/3) Create `PersistentVolumeClaim` object, this is be clam the `PersistentVolume` created.
@@ -91,7 +91,7 @@ EOF
 
 ```
 # Get the PersistentVolumeClaim
-kubectl get pod pvc -o wide
+kubectl get pvc -o wide
 ```
 
 <hr>
@@ -116,4 +116,9 @@ spec:
      persistentVolumeClaim:
         claimName: host-pvc # connect this pod to `PersistentVolumeClaim`
 EOF
+```
+
+```
+# Get the PersistentVolumeClaim
+kubectl get pod pv-pod -o wide
 ```
