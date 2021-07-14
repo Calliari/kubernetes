@@ -21,7 +21,11 @@ spec:
     hostPath:
       path: /var/data # This path will be on the worker-node
 EOF
+```
 
+```
+# Get the pod
+kubectl get pod volume-pod -o wide
 ```
 <hr>
 
@@ -36,6 +40,11 @@ metadata:
 provisioner: kubernetes.io/no-provisioner
 allowVolumeExpansion: true # Allow the 
 EOF
+```
+
+```
+# Get the StorageClass
+kubectl get pod sc -o wide
 ```
 
 
@@ -58,6 +67,11 @@ spec:
 EOF
 ```
 
+```
+# Get the PersistentVolume
+kubectl get pod pv -o wide
+```
+
 3/3) Create `PersistentVolumeClaim` object, this is be clam the `PersistentVolume` created.
 ```
 cat > volume-PersistentVolumeClaim.yml <<'EOF'
@@ -73,6 +87,11 @@ spec:
       requests: 
          storage: 100Mi # Use 100M from 1G on the `PersistentVolume`
 EOF
+```
+
+```
+# Get the PersistentVolumeClaim
+kubectl get pod pvc -o wide
 ```
 
 <hr>
