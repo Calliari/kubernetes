@@ -9,10 +9,10 @@ metadata:
 spec:
   containers:
   - name: busybox
-  - image: busybox
+    image: busybox
     command: ['sh', '-c', 'echo Success! > /output/success.txt']
     volumeMounts:
-     - name: my-volume
+     - name: my-volume # This need to match the 'volumes -name:'
        mountPath: /output # This path will be on the pod (containers: busybox)
   volumes:
   - name: my-volume
@@ -52,16 +52,16 @@ spec:
     image: busybox
     command: ['sh', '-c', 'while true; do echo Success! > /output/success.txt; sleep; done']
     volumeMounts:
-     - name: my-volume
+     - name: shared-vol
        mountPath: /output # This path will be on the pod (containers: busybox1)
   - name: busybox2
     image: busybox
     command: ['sh', '-c', 'while true; do cat /input/success.txt; sleep; done']
     volumeMounts:
-     - name: my-volume
+     - name: shared-vol
        mountPath: /input # This path will be on the pod (containers: busybox2)
   volumes:
-  - name: my-volume
+  - name: shared-vol
     emptyDir: {} # Which is erased when a pod is removed/destroyed/terminated
 EOF
 ```
