@@ -1,7 +1,7 @@
 There are two type of storage to use on the k8s cluster `Volume` and `PersistentVolume`.
 
-In order to allow a pod to user `Volume`.
-Create `Volume` storage object within a pod .
+### In order to allow a pod to user `Volume`.
+#### Create `Volume` storage object within a pod .
 ```
 cat > volume-pod.yml <<'EOF'
 apiVersion: v1
@@ -29,8 +29,8 @@ kubectl get pod volume-pod -o wide
 ```
 <hr>
 
-In order to allow a pod to use `PersistentVolume`, it needs to exist first and this store is a object of the cluster.
-1/3) Create `StorageClass` config object first to be used by `PersistentVolume`.
+### In order to allow a pod to use `PersistentVolume`, it needs to exist first and this store is a object of the cluster.
+#### 1/3) Create `StorageClass` config object first to be used by `PersistentVolume`.
 ```
 cat > volume-StorageClass.yml <<'EOF'
 apiVersion: storage.k8s.io/v1 
@@ -48,7 +48,7 @@ kubectl get sc -o wide
 ```
 
 
-2/3) Create `PersistentVolume` storage object within a pod.
+#### 2/3) Create `PersistentVolume` storage object within a pod.
 ```
 cat > volume-PersistentVolume.yml <<'EOF'
 kind: PersistentVolume 
@@ -72,7 +72,7 @@ EOF
 kubectl get pv -o wide
 ```
 
-3/3) Create `PersistentVolumeClaim` object, this is be clam the `PersistentVolume` created.
+#### 3/3) Create `PersistentVolumeClaim` object, this is be clam the `PersistentVolume` created.
 ```
 cat > volume-PersistentVolumeClaim.yml <<'EOF'
 apiVersion: v1 
@@ -96,7 +96,7 @@ kubectl get pvc -o wide
 
 <hr>
 
-Create a pod to use the storage
+### Create a pod to use the storage
 ```
 cat > pod-using-volumes.yml <<'EOF'
 apiVersion: v1
