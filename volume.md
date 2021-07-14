@@ -30,6 +30,7 @@ kubectl get pod volume-pod -o wide
 <hr>
 
 ### In order to allow a pod to use `PersistentVolume`, it needs to exist first and this store is a object of the cluster.
+*PersistentVolumeClaims reference a storageclass, and they must reference the same StorageClass as a PersistentVolume in order to bind to that PersistentVolume.*
 #### 1/3) Create `StorageClass` config object first to be used by `PersistentVolume`.
 ```
 cat > volume-StorageClass.yml <<'EOF'
