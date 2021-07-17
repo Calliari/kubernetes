@@ -29,6 +29,35 @@ kubectl get pod volume-pod -o wide
 ```
 <hr>
 
+#### Create a multi-container Pod with an emptyDir volume shared between containers, (This one is ephemeral and the data on the `volumes` will be erased when a pod is terminated).
+```
+cat > shared-volume-pod.yml <<'EOF'
+apiVersion: v1
+kind: Pod
+metadata:
+  name: shared-volume-pod
+spec:
+  containers:
+  - name: busybox1
+    image: busybox
+    command: ['sh', '-c', 'while true; do echo Success! > /output/success.txt; sleep; done']
+    volumeMounts:
+     - name: shared-vol
+       mountPath: /output # This path will be on the pod (containers: busybox1)
+  - name: busybox2
+    image: busybox
+    command: ['sh', '-c', 'while true; do cat /input/success.txt; sleep; done']
+    volumeMounts:
+     - name: shared-vol
+       mountPath: /input # This path will be on the pod (containers: busybox2)
+  volumes:
+  - name: shared-vol
+    emptyDir: {} # Which is erased when a pod is removed/destroyed/terminated
+EOF
+```
+
+<hr>
+
 ### In order to allow a pod to use `PersistentVolume`, it needs to exist first and this store is a object of the cluster.
 *PersistentVolumeClaims reference a storageclass, and they must reference the same StorageClass as a PersistentVolume in order to bind to that PersistentVolume.*
 #### 1/3) Create `StorageClass` config object first to be used by `PersistentVolume`.
