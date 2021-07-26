@@ -29,4 +29,6 @@ kubectl logs -n kube-system KUBE-APISERVER_POD_NAME
 The same principal can be used on any container/pod on the cluster:
 ```
 kubectl logs -n NAMESPACE POD_NAME
+kubectl describe -n NAMESPACE POD_NAME
+
 ```
