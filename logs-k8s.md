@@ -26,7 +26,7 @@ kubectl get pods -n kube-system # get the 'kube-apiserver Pod' name
 kubectl logs -n kube-system KUBE-APISERVER_POD_NAME
 ```
 
-The same principal can be used on any container on the cluster:
+The same principal can be used on any container/pod on the cluster:
 ```
 kubectl logs -n NAMESPACE POD_NAME
 ```
