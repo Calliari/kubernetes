@@ -23,5 +23,12 @@ kubectl apply -f netshoot.yml
 
 Access the container interactively to troubleshoot the networking pods such as (kube-proxy, core-dns)
 ```
-kubectl exec --stdin --ttynetshoot -- /bin/sh
+kubectl exec --stdin --tty netshoot -- /bin/sh
 ```
+
+### This will create a new container pod from a command
+```
+kubectl run netshoot --image=nicolaka/netshoot --command -- sh -c while true; do sleep 5; done;
+```
+
+
