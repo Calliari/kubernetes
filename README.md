@@ -223,6 +223,8 @@ Reload the session
 ```
 source ~/.bashrc # to make it reload the session and autocomplete will be ready to work with `kubectl get + TAB`
 ```
+#
+kubectl get componentstatus                         # Get status of the component [controller-manager, scheduler, etcd-0]
 
 #
 kubectl get node                                    # List all nodes (worker-node)
