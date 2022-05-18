@@ -337,6 +337,10 @@ Clone the Git repo that contains the pre-made descriptors:
 
 `cd ~/ &&  git clone https://github.com/linuxacademy/robot-shop.git`
 
+Or get the robot-shop project YAML files from PATH:
+
+`kubernetes/robot-shop-K8s-descriptors`
+
 Since this application has many components, it is a good idea to create a separate namespace for the app:
 
 `kubectl create namespace robot-shop`
