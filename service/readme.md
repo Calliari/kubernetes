@@ -36,7 +36,9 @@ ssh into the master `control plane` and run the following to create a service:
     This service is created inside a cluster and can be accessed by inside and ouside cluster from any node with the port. So basically we use this type of service when we want to expose a service to other pods within the same cluster with node-ip and the port i.g (3.10.4.98:30000). 
 
     `curl -i 3.10.4.98:30000 # if all good, 200 HTTP request will be replied from node master (master)`
+    
     `curl -i 35.178.41.50:30000 # if all good, 200 HTTP request will be replied from node node (node1)`
+    
     `curl -i 35.178.188.54:30000 # if all good, 200 HTTP request will be replied from node node (node2)`
 
     ##### Create the nginx service using the `type: NodePort` from the file called 'nginx-service-NodePort.yaml'
