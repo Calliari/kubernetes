@@ -17,6 +17,12 @@ snapshot save ./etcd-backup.db
 
 ##### Restore backup from snapshot with etcd
 ```
+# Stop all the pods
+cd /etc/kubernetes/manifests/
+mkdir bkp
+mv *.yaml ./bkp/
+
+#  restoring backup from snapshot with etcd
 ETCDCTL_API=3 etcdctl 
 --cacert /etc/kubernetes/pki/etcd/ca.crt \
 --cert /etc/kubernetes/pki/etcd/server.crt \
