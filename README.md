@@ -226,6 +226,11 @@ source ~/.bashrc # to make it reload the session and autocomplete will be ready 
 
 Usefull commands for debug and list resources [objects]
 ```
+# 
+kubectl config get-contexts                         # List all contexts 
+Set the context "kubernetes-admin@kubernetes" to be on a particular namespace "k8s-challenge-2-a"
+kubectl config set-context kubernetes-admin@kubernetes --namespace=k8s-challenge-2-a 
+
 #
 kubectl get componentstatus                         # Get status of the component [controller-manager, scheduler, etcd-0]
 
@@ -277,7 +282,7 @@ kubectl logs -f -l name=myLabel --all-containers    # stream all pods logs with 
 
 
 #
-kubectl get endpoints                         # List of endpoints in your cluster that get created with a service:
+kubectl get endpoints                               # List of endpoints in your cluster that get created with a service:
 
 
 ```
