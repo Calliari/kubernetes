@@ -234,6 +234,9 @@ kubectl config set-context kubernetes-admin@kubernetes --namespace=k8s-challenge
 #
 kubectl get componentstatus                         # Get status of the component [controller-manager, scheduler, etcd-0]
 
+#### 
+kubectl get all namespace --all-namespaces          # List all resources in all namespaces (display everything)
+
 #
 kubectl get node                                    # List all nodes (worker-node)
 kubectl describe node node1                         # Describe a particular node-server (worker-node)
