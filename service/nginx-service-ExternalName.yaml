@@ -1,4 +1,6 @@
-# deploy a SVC redirecting traffic to "externalName: test.com" from deployment-name "my-dep"
+# Create a SVC redirecting traffic to "externalName: test.com" from deployment-name "my-dep"
+# Now using curl from a pod will get the response from "test.com" website
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -13,6 +15,5 @@ spec:
     app: my-dep
 status:
   loadBalancer: {}
-  
-  
-  # Now using curl from a pod will get the response from "test.com" website
+
+# =================================================================
