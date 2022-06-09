@@ -18,7 +18,7 @@ status:
 kubectl create deployment my-dep --image=nginx --replicas=3
 
 # Shifting the traffic on the fly adding the "port:HOST-NODE" and "targetPort:POD-CONTAINER-PORT"
-# # Now using curl from a pod will get the response from "webapi" redirectedt to nginx deployment "my-dep" website (wget --timeout=3 --tries=1 -SO - webapi)
+# # Now using curl from a pod will get the response from "webapi" redirected to nginx deployment "my-dep" website (wget --timeout=3 --tries=1 -SO - webapi)
 
 apiVersion: v1
 kind: Service
