@@ -1,3 +1,5 @@
+# Reference --> https://codeburst.io/kubernetes-ckad-weekly-challenge-7-migrate-a-service-68c7af41c8df
+
 # Create a SVC "webapi" redirecting traffic to "externalName: test.com"
 # Now using curl from a pod will get the response from "webapi" website (wget --timeout=3 --tries=1 -SO - webapi)
 
