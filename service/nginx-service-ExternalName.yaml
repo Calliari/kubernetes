@@ -1,19 +1,35 @@
-# Create a SVC redirecting traffic to "externalName: test.com" from deployment-name "my-dep"
-# Now using curl from a pod will get the response from "test.com" website
+# Create a SVC "webapi" redirecting traffic to "externalName: test.com"
+# Now using curl from a pod will get the response from "webapi" website (wget --timeout=3 --tries=1 -SO - webapi)
 
 apiVersion: v1
 kind: Service
 metadata:
-  creationTimestamp: null
-  labels:
-    app: webapi
   name: webapi
 spec:
   externalName: test.com
   type: ExternalName
-  selector:
-    app: my-dep
 status:
   loadBalancer: {}
 
 # =================================================================
+## Create a DEPLOYMENT name "my-dep" with nginx image 
+kubectl create deployment my-dep --image=nginx --replicas=3
+
+# Shifting the traffic on the fly adding the "port:HOST-NODE" and "targetPort:POD-CONTAINER-PORT"
+# # Now using curl from a pod will get the response from "webapi" website (wget --timeout=3 --tries=1 -SO - webapi)
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapi
+spec:
+  selector:
+    app: my-dep
+  ports:
+    - name: "http"
+      port: 80
+      targetPort: 80
+status:
+  loadBalancer: {}
+  
+  
