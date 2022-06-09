@@ -14,3 +14,5 @@ spec:
 status:
   loadBalancer: {}
   
+  
+  # Now using curl from a pod will get the response from "test.com" website
