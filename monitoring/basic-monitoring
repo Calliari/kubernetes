@@ -3,7 +3,9 @@ To use the base monitoring with `kubectl top` commands first download, change ar
 # https://github.com/kubernetes-sigs/metrics-server
 curl -LO https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 
-vim components.yaml # add the arg "- --kubelet-insecure-tls" on the "deployment.spec.template.spec.containers.arg"
+vim components.yaml 
+# add the arg "- --kubelet-insecure-tls" on the "deployment.spec.template.spec.containers.arg"
+# add the arg "- --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname" on the "deployment.spec.template.spec.containers.arg"
 
 kubectl apply -f components.yaml
 ```
@@ -18,4 +20,14 @@ Now that its up and running, check the metric on the PODS:
 ```
 kubectl top nodes # for workernodes
 kubectl top pods --all-namespaces # for all pods across all namespaces 
+```
+
+Additional useful commands for CPU ad MEMORY consumption: 
+```
+# Checking metric on the PODS
+kubectl top pods --sort-by=cpu  --all-namespaces
+kubectl top pods --sort-by=memory  --all-namespaces
+
+# Checking metric on the CONTAINERS
+kubectl top pods --containers --all-namespaces
 ```
