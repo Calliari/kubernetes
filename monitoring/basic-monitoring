@@ -1,0 +1,21 @@
+To use the base monitoring with `kubectl top` commands first download, change argument on the deployment object and deploy the monitoring tool: 
+```
+# https://github.com/kubernetes-sigs/metrics-server
+curl -LO https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+vim components.yaml # add the arg "- --kubelet-insecure-tls" on the "deployment.spec.template.spec.containers.arg"
+
+kubectl apply -f components.yaml
+```
+
+Check if the metric has been installed correcly and it's up and running: 
+```
+kubectl -n kube-system get pod -l k8s-app=metrics-server
+kubectl -n kube-system logs  metrics-server-7cf8b65d65-ddcrz
+```
+
+Now that its up and running, check the metric on the PODS:
+```
+kubectl top nodes # for workernodes
+kubectl top pods --all-namespaces # for all pods across all namespaces 
+```
